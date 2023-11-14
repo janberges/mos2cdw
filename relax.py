@@ -35,7 +35,7 @@ driver.plot(label=True, interactive=False)
 driver.to_xyz('relaxed.xyz')
 
 if phonons:
-    ph = driver.phonons()
+    ph = driver.phonons(apply_asr_simple=True)
 
     path = 'GMKG'
     q, x, corners = elphmod.bravais.path(path, ibrav=4, N=150)
