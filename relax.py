@@ -6,6 +6,7 @@ import numpy as np
 import scipy.optimize
 
 phonons = False
+triangle = True
 
 pw = elphmod.bravais.read_pwi('dft/MoS2.pwi')
 
@@ -23,7 +24,18 @@ driver = elphmod.md.Driver(elph, nk=(12, 12), nq=(6, 6) if phonons else (1, 1),
 driver.n = 2.2 * len(elph.cells)
 driver.kT = 0.01
 
-driver.random_displacements()
+if triangle:
+    atoms = [1, 4, 10]
+
+    center = np.average(driver.elph.ph.r[atoms], axis=0)
+
+    for atom in atoms:
+        u = center - driver.elph.ph.r[atom]
+        u *= 0.2 / np.linalg.norm(u)
+
+        driver.u[3 * atom:3 * atom + 3] = u
+else:
+    driver.random_displacements()
 
 driver.plot(scale=10.0, interactive=True)
 
