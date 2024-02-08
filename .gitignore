@@ -1,1 +1,9 @@
+*.log
+*.pdf
+*.png
+*.tex
+__pycache__
+model.epmatwp
+model.wigner
+mos2*
 relaxed.xyz
