@@ -22,7 +22,7 @@ driver = elphmod.md.Driver(elph, nk=(12, 12), nq=(6, 6) if phonons else (1, 1),
     kT=pw['degauss'], f=elphmod.occupations.smearing(pw['smearing']))
 
 driver.n = 2.2 * len(elph.cells)
-driver.kT = 0.01
+driver.kT = 0.0175
 
 if triangle:
     atoms = [1, 4, 10]
