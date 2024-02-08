@@ -47,17 +47,28 @@ driver.plot(label=True, interactive=False)
 driver.to_xyz('relaxed.xyz')
 
 if phonons:
-    ph = driver.phonons(apply_asr_simple=True)
+    ph = elphmod.ph.Model('dft/MoS2.ifc', apply_asr_simple=True)
+    Ph = driver.phonons(apply_asr_simple=True)
 
     path = 'GMKG'
     q, x, corners = elphmod.bravais.path(path, ibrav=4, N=150)
+    Q = np.dot(np.dot(q, elphmod.bravais.reciprocals(*ph.a)), Ph.a.T)
 
-    w2 = elphmod.dispersion.dispersion(ph.D, q)
+    w2, u = elphmod.dispersion.dispersion(ph.D, q, vectors=True)
+    W2, U = elphmod.dispersion.dispersion(Ph.D, q, vectors=True)
+
+    W = elphmod.dispersion.unfolding_weights(q, Ph.cells, u, U)
+    W = np.ones(W2.shape)
+
+    linewidth = 1.0
 
     if elphmod.MPI.comm.rank == 0:
-        w = elphmod.ph.sgnsqrt(w2) * elphmod.misc.Ry * 1e3
+        for nu in range(W2.shape[1]):
+            fatband, = elphmod.plot.compline(x, elphmod.ph.sgnsqrt(W2[:, nu])
+                * 1e3 * elphmod.misc.Ry, linewidth * W[:, nu])
 
-        plt.plot(x, w, 'k')
+            plt.fill(*fatband, linewidth=0.0, color='firebrick')
+
         plt.ylabel('Phonon energy (meV)')
         plt.xlabel('Wave vector')
         plt.xticks(x[corners], path)
