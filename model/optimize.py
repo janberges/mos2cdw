@@ -18,7 +18,7 @@ AFMhot = storylines.colormap( # Gnuplot
     (1.00, storylines.Color(255, 255, 255)),
     )
 
-q = np.array([[0.0, np.pi, 0.0]])
+q = np.array([[0.0, 0.0], [0.0, np.pi], [2 * np.pi / 3, 2 * np.pi / 3]])
 
 BZ = dict(points=100, outside=np.nan)
 
@@ -28,13 +28,13 @@ elph = elphmod.elph.Model('../dft/mos2.epmatwp', '../dft/mos2.wigner', el, ph)
 
 w2, u = elphmod.dispersion.dispersion(ph.D, q, vectors=True)
 
-g0 = elph.sample(q, (nk, nk), u=u[:, :, 0:1])
+g0 = elph.sample(q, (nk, nk))
 g02 = abs(g0) ** 2
 
 def error(t):
     coupling = model.setup_coupling(*t)
 
-    g = elphmod.elph.sample(coupling, q, (nk, nk), u=u[:, :, 0:1])
+    g = elphmod.elph.sample(coupling, q, (nk, nk))
 
     error = (abs(g - g0) ** 2).sum()
 
@@ -42,13 +42,17 @@ def error(t):
 
     return error
 
-t = scipy.optimize.minimize(error, [-0.14, 0.48, -0.38, -0.26, 0.31, 0.32]).x
+t = scipy.optimize.minimize(error,
+    [0.31547, -0.52037, -0.18981, 0.36765, 0.14554, -0.04496]).x
 
 coupling = model.setup_coupling(*t)
 
 model.save_coupling('model', coupling, el, ph)
 
-g = elphmod.elph.sample(coupling, q, (nk, nk), u=u[:, :, 0:1])
+g0 = elph.sample(q[1:2], (nk, nk), u=u[1:2, :, :1])
+g02 = abs(g0) ** 2
+
+g = elphmod.elph.sample(coupling, q[1:2], (nk, nk), u=u[1:2, :, :1])
 g2 = abs(g) ** 2
 
 g2max = max(g02.max(), g2.max())
