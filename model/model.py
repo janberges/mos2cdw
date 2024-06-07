@@ -91,19 +91,8 @@ def save_coupling(stem, coupling, el, ph):
 
     g = elphmod.elph.sample(coupling, q.reshape((-1, 3)), nk)
 
-    Rk, dk, lk = elphmod.bravais.wigner_seitz_x('k', nk[0], ph.a)
-    Rg, dg, lg = elphmod.bravais.wigner_seitz_x('g', nq[0], ph.a,
-        ph.r - ph.r[0])
-
-    Rk = np.insert(Rk, obj=2, values=0, axis=1)
-    Rg = np.insert(Rg, obj=2, values=0, axis=1)
-
-    dk = np.reshape(dk, (1, 1, len(Rk)))
-    dg = np.reshape(dg, (1, 1, 3, len(Rg)))
-
-    elph = elphmod.elph.Model(Rk=Rk, dk=dk, Rg=Rg, dg=dg, el=el, ph=ph,
-        divide_mass=False)
-    elphmod.elph.q2r(elph, nq, nk, g)
+    elph = elphmod.elph.Model(el=el, ph=ph)
+    elphmod.elph.q2r(elph, nq, nk, g, r=np.repeat(ph.r[:1], el.size, axis=0))
     elph.standardize(eps=1e-10)
 
     if elphmod.MPI.comm.rank == 0:
