@@ -9,6 +9,7 @@ comm = elphmod.MPI.comm
 
 nk = 24
 kT = 300.0 * elphmod.misc.kB / elphmod.misc.Ry
+f = elphmod.occupations.fermi_dirac
 
 q = np.array([[0.0, np.pi], [2 * np.pi / 3, 2 * np.pi / 3]])
 q_label = 'MK'
@@ -34,8 +35,8 @@ elph = elphmod.elph.Model('../model/model.epmatwp', '../model/model.wigner',
     el, ph)
 
 e, U = elphmod.dispersion.dispersion_full_nosym(el.H, nk, vectors=True)
-e -= elphmod.occupations.find_Fermi_level(2.15, e, kT)
 e /= elphmod.misc.Ry
+e -= elphmod.occupations.find_Fermi_level(2.15, e, kT, f)
 
 w2, u = elphmod.dispersion.dispersion(ph.D, q, vectors=True)
 
@@ -46,10 +47,10 @@ for iq in range(len(q)):
 g2 = abs(elph.sample(q, U=U[..., n:n + 1], u=u[..., :1])) ** 2
 
 Pi = elphmod.diagrams.phonon_self_energy(q, e[..., n:n + 1], g2=g2[:, :1],
-    kT=kT, occupations=elphmod.occupations.fermi_dirac, fluctuations=True)[1]
+    kT=kT, occupations=f, fluctuations=True)[1]
 
 X0 = elphmod.diagrams.phonon_self_energy(q, e[..., n:n + 1],
-    kT=kT, occupations=elphmod.occupations.fermi_dirac, fluctuations=True)[1]
+    kT=kT, occupations=f, fluctuations=True)[1]
 
 for iq in range(len(q)):
     kxmax, kymax, kx, ky, ek1_BZ = elphmod.plot.toBZ(e[:, :, n], return_k=True,
