@@ -10,9 +10,9 @@ triangle = True
 
 pw = elphmod.bravais.read_pwi('dft/MoS2.pwi')
 
-el = elphmod.el.Model('dft/MoS2', rydberg=True)
+el = elphmod.el.Model('dft/MoS2_3', rydberg=True)
 ph = elphmod.ph.Model('dft/MoS2.ifc', divide_mass=False, apply_asr_simple=True)
-elph = elphmod.elph.Model('dft/MoS2.epmatwp', 'dft/MoS2.wigner', el, ph,
+elph = elphmod.elph.Model('dft/MoS2_3.epmatwp', 'dft/MoS2_3.wigner', el, ph,
     divide_mass=False, shared_memory=True)
 
 elph = elph.supercell(2, 2, shared_memory=True)

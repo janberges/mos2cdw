@@ -15,7 +15,7 @@ q = np.array([[0.0, np.pi], [2 * np.pi / 3, 2 * np.pi / 3]])
 q_label = 'MK'
 
 n = 1
-nu = [0, 1]
+nu = [1, 2]
 
 cmap = storylines.colormap(
     (0.00, storylines.Color(94, 60, 153)),
@@ -27,16 +27,16 @@ cmap = storylines.colormap(
 
 BZ = dict(points=100, outside=np.nan)
 
-el = elphmod.el.Model('../dft/mos2')
-ph = elphmod.ph.Model('../dft/mos2.ifc', apply_asr_simple=True)
-#elph = elphmod.elph.Model('../dft/mos2.epmatwp', '../dft/mos2.wigner',
-#    el, ph)
-elph = elphmod.elph.Model('../model/model.epmatwp', '../model/model.wigner',
+el = elphmod.el.Model('../dft/MoS2_3')
+ph = elphmod.ph.Model('../dft/MoS2.ifc', apply_asr_simple=True)
+elph = elphmod.elph.Model('../dft/MoS2_3.epmatwp', '../dft/MoS2_3.wigner',
     el, ph)
+#elph = elphmod.elph.Model('../model/model.epmatwp', '../model/model.wigner',
+#    el, ph)
 
 e, U = elphmod.dispersion.dispersion_full_nosym(el.H, nk, vectors=True)
 e /= elphmod.misc.Ry
-e -= elphmod.occupations.find_Fermi_level(2.15, e, kT, f)
+e -= elphmod.occupations.find_Fermi_level(2.1, e, kT, f)
 
 w2, u = elphmod.dispersion.dispersion(ph.D, q, vectors=True)
 

@@ -56,10 +56,10 @@ def setup_coupling(
     dt = np.zeros((6, 9, 3, 3))
 
     for n in range(6):
-        dt[n, :2] = derivative(t0.T if n % 2 else t0,
+        dt[n, 3:5] = derivative(t0.T if n % 2 else t0,
             n * 60 * elphmod.bravais.deg)
 
-    sqrtM = np.sqrt(np.repeat([M, m, m], 3)[:, np.newaxis, np.newaxis]
+    sqrtM = np.sqrt(np.repeat([m, M, m], 3)[:, np.newaxis, np.newaxis]
         * elphmod.misc.uRy)
 
     def coupling(q1=0, q2=0, q3=0, k1=0, k2=0, k3=0, **ignore):
