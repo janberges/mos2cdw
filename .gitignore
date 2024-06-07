@@ -2,6 +2,7 @@
 *.pdf
 *.png
 *.tex
+MoS2_3*
 __pycache__
 model.epmatwp
 model.wigner
