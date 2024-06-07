@@ -1,5 +1,6 @@
 *.log
 *.pdf
+*.pickle
 *.png
 *.tex
 MoS2_3*

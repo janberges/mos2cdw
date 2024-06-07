@@ -10,20 +10,9 @@ unfold = False
 triangle = True
 linewidth = 0.5
 
-pw = elphmod.bravais.read_pwi('dft/MoS2.pwi')
+driver = elphmod.md.Driver.load('driver_small.pickle')
 
-el = elphmod.el.Model('dft/MoS2_3', rydberg=True)
-ph = elphmod.ph.Model('dft/MoS2.ifc', divide_mass=False, apply_asr_simple=True)
-elph = elphmod.elph.Model('model/model.epmatwp', 'model/model.wigner', el, ph,
-    divide_mass=False, shared_memory=True)
-
-elph = elph.supercell(2, 2, shared_memory=True)
-
-driver = elphmod.md.Driver(elph, nk=(12, 12), nq=(6, 6) if phonons else (1, 1),
-    n=(2 - pw['tot_charge']) * len(elph.cells),
-    kT=pw['degauss'], f=elphmod.occupations.smearing(pw['smearing']))
-
-driver.n = 2.3 * len(elph.cells)
+driver.n = 2.3 * len(driver.elph.cells)
 driver.kT = 0.005
 driver.f = elphmod.occupations.fermi_dirac
 
