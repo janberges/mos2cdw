@@ -92,7 +92,7 @@ def save_coupling(stem, coupling, el, ph):
     g = elphmod.elph.sample(coupling, q.reshape((-1, 3)), nk)
 
     elph = elphmod.elph.Model(el=el, ph=ph)
-    elphmod.elph.q2r(elph, nq, nk, g, r=np.repeat(ph.r[:1], el.size, axis=0))
+    elphmod.elph.q2r(elph, nq, nk, g, r=np.repeat(ph.r[1:2], el.size, axis=0))
     elph.standardize(eps=1e-10)
 
     if elphmod.MPI.comm.rank == 0:
