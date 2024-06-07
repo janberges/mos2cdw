@@ -94,13 +94,4 @@ def save_coupling(stem, coupling, el, ph):
     elph = elphmod.elph.Model(el=el, ph=ph)
     elphmod.elph.q2r(elph, nq, nk, g, r=np.repeat(ph.r[1:2], el.size, axis=0))
     elph.standardize(eps=1e-10)
-
-    if elphmod.MPI.comm.rank == 0:
-        with open('%s.wigner' % stem, 'wb') as data:
-            for obj in [1, 1,
-                    len(elph.Rk), elph.Rk, np.ones(len(elph.Rk), dtype=int),
-                    len(elph.Rg), elph.Rg, np.ones(len(elph.Rg), dtype=int)]:
-                np.array(obj, dtype=np.int32).tofile(data)
-
-        with open('%s.epmatwp' % stem, 'wb') as data:
-            np.swapaxes(elph.data, 3, 4).astype(np.complex128).tofile(data)
+    elph.to_epmatwp(stem)
