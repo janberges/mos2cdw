@@ -36,7 +36,7 @@ scipy.optimize.minimize(driver.free_energy, driver.u, jac=driver.jacobian,
 
 driver.plot(label=True, interactive=False)
 
-driver.to_xyz('relaxed.xyz')
+driver.to_xyz('relax_small.xyz')
 
 if phonons:
     Ph = driver.phonons(apply_asr_simple=True)
