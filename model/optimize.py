@@ -29,7 +29,6 @@ elph = elphmod.elph.Model('../dft/MoS2_3.epmatwp', '../dft/MoS2_3.wigner', el, p
 w2, u = elphmod.dispersion.dispersion(ph.D, q, vectors=True)
 
 g0 = elph.sample(q, (nk, nk))
-g02 = abs(g0) ** 2
 
 def error(t):
     coupling = model.setup_coupling(*t)
