@@ -5,8 +5,10 @@ import matplotlib.pyplot as plt
 import numpy as np
 import scipy.optimize
 
-phonons = False
+phonons = True
+unfold = False
 triangle = True
+linewidth = 0.5
 
 pw = elphmod.bravais.read_pwi('dft/MoS2.pwi')
 
@@ -47,20 +49,24 @@ driver.plot(label=True, interactive=False)
 driver.to_xyz('relaxed.xyz')
 
 if phonons:
-    ph = elphmod.ph.Model('dft/MoS2.ifc', apply_asr_simple=True)
     Ph = driver.phonons(apply_asr_simple=True)
 
     path = 'GMKG'
     q, x, corners = elphmod.bravais.path(path, ibrav=4, N=150)
-    Q = np.dot(np.dot(q, elphmod.bravais.reciprocals(*ph.a)), Ph.a.T)
 
-    w2, u = elphmod.dispersion.dispersion(ph.D, q, vectors=True)
-    W2, U = elphmod.dispersion.dispersion(Ph.D, q, vectors=True)
+    if unfold:
+        ph = elphmod.ph.Model('dft/MoS2.ifc', apply_asr_simple=True)
 
-    W = elphmod.dispersion.unfolding_weights(q, Ph.cells, u, U)
-    W = np.ones(W2.shape)
+        Q = np.dot(np.dot(q, elphmod.bravais.reciprocals(*ph.a)), Ph.a.T)
 
-    linewidth = 1.0
+        w2, u = elphmod.dispersion.dispersion(ph.D, q, vectors=True)
+        W2, U = elphmod.dispersion.dispersion(Ph.D, Q, vectors=True)
+
+        W = elphmod.dispersion.unfolding_weights(q, Ph.cells, u, U)
+    else:
+        W2, U = elphmod.dispersion.dispersion(Ph.D, q, vectors=True)
+
+        W = np.ones(W2.shape)
 
     if elphmod.MPI.comm.rank == 0:
         for nu in range(W2.shape[1]):
