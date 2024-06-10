@@ -9,10 +9,12 @@ plot = storylines.Plot(
     style='APS',
     font='Utopia',
 
-    xlabel=r'Doping (electrons per unit cell)',
+    xlabel=r'Doping electrons per unit cell',
 
     xstep=0.1,
     ystep=5.0,
+
+    ymax=30.0,
 
     grid=True,
 
@@ -26,6 +28,8 @@ plot.axes()
 
 CDW = u > 0
 SYM = ~CDW
+
+plot.line(x=0.26, color='lightgray', densely_dashed=True)
 
 plot.line(doping[CDW], u[CDW] * 1e2, color='cyan', mark='triangle*', jump=1.0)
 plot.line(doping[SYM], u[SYM] * 1e2, color='cyan', mark='triangle*',
