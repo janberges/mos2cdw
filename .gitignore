@@ -9,3 +9,4 @@ model.epmatwp
 model.wigner
 mos2*
 relax*.xyz
+slurm-*.out
