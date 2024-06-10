@@ -8,5 +8,5 @@ __pycache__
 model.epmatwp
 model.wigner
 mos2*
-relax*.xyz
+relax_small.xyz
 slurm-*.out

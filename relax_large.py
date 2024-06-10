@@ -6,7 +6,7 @@ import scipy.optimize
 
 driver = elphmod.md.Driver.load('driver_large.pickle')
 
-driver.n = 2.3 * len(driver.elph.cells)
+driver.n = 2.4 * len(driver.elph.cells)
 driver.kT = 0.005
 driver.f = elphmod.occupations.fermi_dirac
 
