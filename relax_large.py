@@ -4,8 +4,7 @@ import elphmod
 import numpy as np
 import scipy.optimize
 
-N = 12
-triangles = True
+info = elphmod.MPI.info
 
 pw = elphmod.bravais.read_pwi('dft/MoS2.pwi')
 
@@ -20,33 +19,30 @@ driver = elphmod.md.Driver(elph,
     n=2 - pw['tot_charge'],
     kT=pw['degauss'],
     f=elphmod.occupations.smearing(pw['smearing']),
-    supercell=(N, N)
+    supercell=[(24, 12, 0), (-12, 12, 0)],
 )
 
-driver.n = 2.4 * len(driver.elph.cells)
+#driver.plot(label=True, scale=20.0, interactive=False)
+
+driver.n = 2.3 * len(driver.elph.cells)
 driver.kT = 0.005
 driver.f = elphmod.occupations.fermi_dirac
 
-if triangles:
-    for row in range(0, N, 2):
-        for col in range(0, N, 2):
-            at1 = 3 * (row + N * col) + 1
-            at2 = at1 + 3
-            at3 = at2 + 3 * N
+driver.random_displacements()
 
-            atoms = [at1, at2, at3]
+#atoms = [598, 601, 655]
+#
+#center = np.average(driver.elph.ph.r[atoms], axis=0)
+#
+#for atom in atoms:
+#    u = center - driver.elph.ph.r[atom]
+#    u *= 0.3 / np.linalg.norm(u)
+#
+#    driver.u[3 * atom:3 * atom + 3] = u
 
-            center = np.average(driver.elph.ph.r[atoms], axis=0)
+#driver.from_xyz('relax_large.xyz')
 
-            for atom in atoms:
-                u = center - driver.elph.ph.r[atom]
-                u *= 0.2 / np.linalg.norm(u)
-
-                driver.u[3 * atom:3 * atom + 3] = u
-else:
-    driver.random_displacements()
-
-driver.plot(scale=10.0, interactive=True)
+driver.plot(scale=20.0, interactive=True)
 
 scipy.optimize.minimize(driver.free_energy, driver.u, jac=driver.jacobian,
     method='BFGS', options=dict(gtol=1e-6, norm=np.inf))
