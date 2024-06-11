@@ -83,7 +83,7 @@ for doping in dopings:
         w2, u = elphmod.dispersion.dispersion(ph.D, q, vectors=True)
         w2 *= elphmod.misc.Ry ** 2
 
-        if np.any(w2[1:] < 0.0):
+        if np.any(w2 < -1e-8):
             info('Imaginary frequencies!')
             continue
 
