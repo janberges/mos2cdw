@@ -54,10 +54,14 @@ if comm.rank == 0:
     data.write('\n')
 
 for doping in dopings:
+    info('Setting the doping to %g electrons per unit cell...' % doping)
+
     driver.n = (2 + doping) * len(driver.elph.cells)
 
     for cdw in False, True:
         if cdw:
+            info('Checking for a CDW...')
+
             set_triangle(driver)
 
             scipy.optimize.minimize(driver.free_energy, driver.u,
@@ -68,6 +72,8 @@ for doping in dopings:
                 info('No CDW!')
                 continue
         else:
+            info('Checking the undistorted system...')
+
             driver.u[:] = 0.0
 
         driver.diagonalize()
