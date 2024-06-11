@@ -4,6 +4,9 @@ import elphmod
 import numpy as np
 import scipy.optimize
 
+N = 12
+triangles = True
+
 pw = elphmod.bravais.read_pwi('dft/MoS2.pwi')
 
 el = elphmod.el.Model('dft/MoS2_3', rydberg=True)
@@ -17,14 +20,31 @@ driver = elphmod.md.Driver(elph,
     n=2 - pw['tot_charge'],
     kT=pw['degauss'],
     f=elphmod.occupations.smearing(pw['smearing']),
-    supercell=(12, 12)
+    supercell=(N, N)
 )
 
 driver.n = 2.4 * len(driver.elph.cells)
 driver.kT = 0.005
 driver.f = elphmod.occupations.fermi_dirac
 
-driver.random_displacements()
+if triangles:
+    for row in range(0, N, 2):
+        for col in range(0, N, 2):
+            at1 = 3 * (row + N * col) + 1
+            at2 = at1 + 3
+            at3 = at2 + 3 * N
+
+            atoms = [at1, at2, at3]
+
+            center = np.average(driver.elph.ph.r[atoms], axis=0)
+
+            for atom in atoms:
+                u = center - driver.elph.ph.r[atom]
+                u *= 0.2 / np.linalg.norm(u)
+
+                driver.u[3 * atom:3 * atom + 3] = u
+else:
+    driver.random_displacements()
 
 driver.plot(scale=10.0, interactive=True)
 
