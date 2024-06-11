@@ -12,12 +12,7 @@ To further reduce the cost, we map the coupling to a nearest-neighbor model:
     cd model
     python3 optimize.py
 
-Now we are ready to set up different supercells:
-
-    python3 setup_small.py
-    python3 setup_large.py
-
-Then we can perform structural relaxations on these supercells:
+Now we are ready to relax the structure on different supercells:
 
     python3 relax_small.py
     python3 relax_large.py
