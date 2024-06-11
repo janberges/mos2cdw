@@ -3,7 +3,7 @@
 import numpy as np
 import storylines
 
-doping, lamda, wlog, w2nd, Tc, u = np.loadtxt('phase_small.dat', skiprows=1).T
+doping, lamda, wlog, w2nd, Tc, u = np.loadtxt('phases.dat', skiprows=1).T
 
 plot = storylines.Plot(
     style='APS',
@@ -51,4 +51,4 @@ plot.line(doping[CDW], Tc[CDW], color='blue', mark='*', jump=1.0)
 plot.line(doping[SYM], Tc[SYM], color='blue', mark='*',
     label=r'$T_{\mathrm c}$ (K)')
 
-plot.save('phase_small.pdf')
+plot.save('phases.pdf')

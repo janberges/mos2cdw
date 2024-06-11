@@ -10,4 +10,4 @@ cd $SLURM_SUBMIT_DIR
 
 export SLURM_CPU_BIND=none
 
-mpirun python3 phase_small.py
+mpirun python3 phases.py

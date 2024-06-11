@@ -48,7 +48,7 @@ kTel *= elphmod.misc.Ry
 driver.plot(scale=10.0, interactive=True)
 
 if comm.rank == 0:
-    data = open('phase_small.dat', 'w')
+    data = open('phases.dat', 'w')
     data.write(' %9s' * 6
         % ('doping/e', 'lamda', 'wlog/eV', 'w2nd/eV', 'Tc/K', '|u|/AA'))
     data.write('\n')
