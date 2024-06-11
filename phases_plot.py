@@ -16,7 +16,7 @@ plot = storylines.Plot(
 
     grid=True,
 
-    lpos='llrrrbbttt',
+    lpos='LLRRRBTTT',
     lbox=True,
     )
 
@@ -24,26 +24,26 @@ plot.height = plot.width
 
 plot.axes()
 
-CDW = u > 0
+CDW = u > 1e-3
 SYM = ~CDW
 
-plot.line(doping[CDW], u[CDW] * 1e2, color='cyan', mark='triangle*', jump=1.0)
+plot.line(doping[CDW], u[CDW] * 1e2, color='cyan', mark='triangle*')
 plot.line(doping[SYM], u[SYM] * 1e2, color='cyan', mark='triangle*',
     label=r'$|u|_{2 \times 2}$ (pm)')
 
-plot.line(doping[CDW], wlog[CDW] * 1e3, color='gray', mark='x', jump=1.0)
+plot.line(doping[CDW], wlog[CDW] * 1e3, color='gray', mark='x')
 plot.line(doping[SYM], wlog[SYM] * 1e3, color='gray', mark='x',
     label=r'$\omega_{\mathrm{log}}$ (meV)')
 
-plot.line(doping[CDW], w2nd[CDW] * 1e3, color='lightgray', mark='+', jump=1.0)
+plot.line(doping[CDW], w2nd[CDW] * 1e3, color='lightgray', mark='+')
 plot.line(doping[SYM], w2nd[SYM] * 1e3, color='lightgray', mark='+',
     label=r'$\omega_{\mathrm{2nd}}$ (meV)')
 
-plot.line(doping[CDW], lamda[CDW], color='red', mark='square*', jump=1.0)
+plot.line(doping[CDW], lamda[CDW], color='red', mark='square*')
 plot.line(doping[SYM], lamda[SYM], color='red', mark='square*',
     label=r'$\lambda$')
 
-plot.line(doping[CDW], Tc[CDW], color='blue', mark='*', jump=1.0)
+plot.line(doping[CDW], Tc[CDW], color='blue', mark='*')
 plot.line(doping[SYM], Tc[SYM], color='blue', mark='*',
     label=r'$T_{\mathrm c}$ (K)')
 

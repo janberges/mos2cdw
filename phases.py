@@ -14,19 +14,25 @@ eps = 1e-10
 
 dopings = np.linspace(0.0, 0.6, 61)
 
-driver = elphmod.md.Driver.load('driver_small.pickle')
+pw = elphmod.bravais.read_pwi('dft/MoS2.pwi')
+
+el = elphmod.el.Model('dft/MoS2_3', rydberg=True)
+ph = elphmod.ph.Model('dft/MoS2.ifc', divide_mass=False, apply_asr_simple=True)
+elph = elphmod.elph.Model('model/model.epmatwp', 'model/model.wigner', el, ph,
+    divide_mass=False, shared_memory=True)
+
+elph = elph.supercell(2, 2, shared_memory=True)
+
+driver = elphmod.md.Driver(elph,
+    nk=(12, 12),
+    nq=(12, 12),
+    n=(2 - pw['tot_charge']) * len(elph.cells),
+    kT=pw['degauss'],
+    f=elphmod.occupations.smearing(pw['smearing']),
+)
 
 driver.kT = 0.005
 driver.f = elphmod.occupations.fermi_dirac
-
-def set_triangle(driver, atoms=[1, 4, 10], displacement=0.2):
-    center = np.average(driver.elph.ph.r[atoms], axis=0)
-
-    for atom in atoms:
-        u = center - driver.elph.ph.r[atom]
-        u *= displacement / np.linalg.norm(u)
-
-        driver.u[3 * atom:3 * atom + 3] = u
 
 q = sorted(elphmod.bravais.irreducibles(nq))
 q = 2 * np.pi / nq * np.array(q, dtype=float)
@@ -58,51 +64,43 @@ for doping in dopings:
 
     driver.n = (2 + doping) * len(driver.elph.cells)
 
-    for cdw in False, True:
-        if cdw:
-            info('Checking for a CDW...')
+    driver.random_displacements()
 
-            set_triangle(driver)
+    scipy.optimize.minimize(driver.free_energy, driver.u, jac=driver.jacobian,
+        method='BFGS', options=dict(gtol=1e-6, norm=np.inf))
 
-            scipy.optimize.minimize(driver.free_energy, driver.u,
-                jac=driver.jacobian, method='BFGS',
-                options=dict(gtol=1e-6, norm=np.inf))
+    if np.all(abs(driver.u) < 1e-3):
+        info('No CDW!')
 
-            if np.all(abs(driver.u) < 1e-3):
-                info('No CDW!')
-                continue
-        else:
-            info('Checking the undistorted system...')
+    driver.diagonalize()
 
-            driver.u[:] = 0.0
+    ph = driver.phonons(apply_asr_simple=True)
 
-        driver.diagonalize()
+    w2, u = elphmod.dispersion.dispersion(ph.D, q, vectors=True)
+    w2 *= elphmod.misc.Ry ** 2
 
-        ph = driver.phonons(apply_asr_simple=True)
+    if np.any(w2 < -1e-8):
+        info('Imaginary frequencies!')
+        continue
 
-        w2, u = elphmod.dispersion.dispersion(ph.D, q, vectors=True)
-        w2 *= elphmod.misc.Ry ** 2
+    el = driver.electrons()
 
-        if np.any(w2 < -1e-8):
-            info('Imaginary frequencies!')
-            continue
+    e, U = elphmod.dispersion.dispersion_full_nosym(el.H, nk, vectors=True)
+    e = e[..., el.size // 3:]
+    U = U[..., el.size // 3:]
 
-        el = driver.electrons()
+    g2 = elphmod.elph.transform(g, q, nk, U, u, squared=True,
+        shared_memory=True)
 
-        e, U = elphmod.dispersion.dispersion_full_nosym(el.H, nk, vectors=True)
+    lamda, wlog, Tc, w2nd = elphmod.eliashberg.McMillan(nq, e, w2, g2, eps,
+        mustar=0.0, kT=kTel, f=f, correct=True)
 
-        g2 = elphmod.elph.transform(g, q, nk, U, u, squared=True,
-            shared_memory=True)
+    if comm.rank == 0:
+        data.write(' %9.6f' * 6 % (doping, lamda, wlog, w2nd, Tc,
+            np.linalg.norm(driver.u) * elphmod.misc.a0))
+        data.write('\n')
 
-        lamda, wlog, Tc, w2nd = elphmod.eliashberg.McMillan(nq, e, w2, g2, eps,
-            mustar=0.0, kT=kTel, f=f, correct=True)
-
-        if comm.rank == 0:
-            data.write(' %9.6f' * 6 % (doping, lamda, wlog, w2nd, Tc,
-                np.linalg.norm(driver.u) * elphmod.misc.a0))
-            data.write('\n')
-
-        info('The critical temperature is %g K.' % Tc)
+    info('The critical temperature is %g K.' % Tc)
 
 if comm.rank == 0:
     data.close()

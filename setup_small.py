@@ -17,7 +17,6 @@ elph = elph.supercell(2, 2, shared_memory=True)
 driver = elphmod.md.Driver(elph,
     nk=(12, 12),
     nq=(6, 6),
-    #nq=(3, 3), # for phase_small.py to avoid imaginary frequencies near q = 0
     n=(2 - pw['tot_charge']) * len(elph.cells),
     kT=pw['degauss'],
     f=elphmod.occupations.smearing(pw['smearing']),
