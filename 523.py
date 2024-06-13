@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 import elphmod
-import numpy as np
 
 el = elphmod.el.Model('dft/MoS2')
 ph = elphmod.ph.Model('dft/MoS2.ifc', divide_mass=False)
