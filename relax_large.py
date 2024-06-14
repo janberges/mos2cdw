@@ -90,7 +90,7 @@ for doping in dopings:
     if comm.rank == 0:
         data.write(' %9.6f' * 6 % (doping, lamda, wlog, w2nd, Tc,
             np.linalg.norm(driver.u) * elphmod.misc.a0
-                * 4 / len(driver.elph.cells)))
+                * np.sqrt(4 / len(driver.elph.cells))))
         data.write('\n')
 
     info('The critical temperature is %g K.' % Tc)
