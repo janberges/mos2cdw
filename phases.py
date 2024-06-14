@@ -52,7 +52,7 @@ for doping in dopings:
 
     driver.diagonalize()
 
-    lamda, wlog, w2nd = driver.superconductivity(kT=0.01)
+    lamda, wlog, w2nd = driver.superconductivity(kT=0.01, tol=-1e-8)
 
     if lamda is None:
         info('Imaginary frequencies!')
