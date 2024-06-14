@@ -16,7 +16,8 @@ plot = storylines.Plot(
 
     grid=True,
 
-    lpos='LLRRRBTTT',
+    lpos='cm',
+    lopt='above, xshift=3mm, yshift=2mm',
     lbox=True,
     )
 
@@ -46,5 +47,13 @@ plot.line(doping[SYM], lamda[SYM], color='red', mark='square*',
 plot.line(doping[CDW], Tc[CDW], color='blue', mark='*')
 plot.line(doping[SYM], Tc[SYM], color='blue', mark='*',
     label=r'$T_{\mathrm c}$ (K)')
+
+doping, lamda, wlog, w2nd, Tc, u = np.loadtxt('relax_large.dat', skiprows=1).T
+
+plot.line(doping, u * 1e2, color='cyan', mark='triangle*')
+plot.line(doping, wlog * 1e3, color='gray', mark='x')
+plot.line(doping, w2nd * 1e3, color='lightgray', mark='+')
+plot.line(doping, lamda, color='red', mark='square*')
+plot.line(doping, Tc, color='blue', mark='*')
 
 plot.save('phases.pdf')
