@@ -32,6 +32,32 @@ driver = elphmod.md.Driver(elph,
 driver.kT = 0.005
 driver.f = elphmod.occupations.fermi_dirac
 
+def triangles():
+    u = 0.1 * np.array([1.0, 0.0])
+
+    driver.random_displacements(0.02)
+
+    random = driver.u.copy()
+
+    driver.u[:] = 0.0
+
+    block = 3 * driver.elph.ph.nat // len(driver.elph.cells)
+
+    for n, (i, j, k) in enumerate(driver.elph.cells):
+        if i % 2 and j % 2:
+            driver.u[n * block + 3:n * block + 5] = elphmod.bravais.rotate(u,
+                3 * np.pi / 6)
+
+        elif not i % 2 and not j % 2:
+            driver.u[n * block + 3:n * block + 5] = elphmod.bravais.rotate(u,
+                7 * np.pi / 6)
+
+        elif i % 2 and not j % 2:
+            driver.u[n * block + 3:n * block + 5] = elphmod.bravais.rotate(u,
+                11 * np.pi / 6)
+
+    driver.u += random
+
 def random():
     driver.random_displacements()
 
