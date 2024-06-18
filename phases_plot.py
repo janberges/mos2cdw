@@ -50,10 +50,12 @@ plot.line(doping[SYM], Tc[SYM], color='blue', mark='*',
 
 doping, lamda, wlog, w2nd, Tc, u = np.loadtxt('relax_large.dat', skiprows=1).T
 
-plot.line(doping, u * 1e2, color='cyan', mark='triangle*')
-plot.line(doping, wlog * 1e3, color='gray', mark='x')
-plot.line(doping, w2nd * 1e3, color='lightgray', mark='+')
-plot.line(doping, lamda, color='red', mark='square*')
-plot.line(doping, Tc, color='blue', mark='*')
+style = dict(only_marks=True, mark_size='0.75pt')
+
+plot.line(doping, u * 1e2, mark='triangle*', **style)
+plot.line(doping, wlog * 1e3, mark='x', **style)
+plot.line(doping, w2nd * 1e3, mark='+', **style)
+plot.line(doping, lamda, mark='square*', **style)
+plot.line(doping, Tc, mark='*', **style)
 
 plot.save('phases.pdf')
