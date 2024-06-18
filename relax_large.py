@@ -32,19 +32,24 @@ driver = elphmod.md.Driver(elph,
 driver.kT = 0.005
 driver.f = elphmod.occupations.fermi_dirac
 
-#driver.random_displacements()
+def random():
+    driver.random_displacements()
 
-#atoms = [598, 601, 655]
-#
-#center = np.average(driver.elph.ph.r[atoms], axis=0)
-#
-#for atom in atoms:
-#    u = center - driver.elph.ph.r[atom]
-#    u *= 0.3 / np.linalg.norm(u)
-#
-#    driver.u[3 * atom:3 * atom + 3] = u
+def triangle():
+    driver.u[:] = 0.0
 
-#driver.from_xyz('relax_large.xyz')
+    atoms = [598, 601, 655]
+
+    center = np.average(driver.elph.ph.r[atoms], axis=0)
+
+    for atom in atoms:
+        u = center - driver.elph.ph.r[atom]
+        u *= 0.3 / np.linalg.norm(u)
+
+        driver.u[3 * atom:3 * atom + 3] = u
+
+def relaxed():
+    driver.from_xyz('relax_large.xyz')
 
 #driver.plot(scale=20.0, interactive=True)
 #
