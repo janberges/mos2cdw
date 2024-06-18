@@ -8,7 +8,7 @@ import sys
 comm = elphmod.MPI.comm
 info = elphmod.MPI.info
 
-dopings = np.linspace(0.26, 0.31, 6)
+dopings = np.linspace(0.0, 0.6, 61)
 
 pw = elphmod.bravais.read_pwi('dft/MoS2.pwi')
 
@@ -28,11 +28,11 @@ driver = elphmod.md.Driver(elph,
 
 #driver.plot(label=True, scale=20.0, interactive=False)
 
-driver.n = 2.3 * len(driver.elph.cells)
+#driver.n = 2.3 * len(driver.elph.cells)
 driver.kT = 0.005
 driver.f = elphmod.occupations.fermi_dirac
 
-driver.random_displacements()
+#driver.random_displacements()
 
 #atoms = [598, 601, 655]
 #
@@ -46,18 +46,18 @@ driver.random_displacements()
 
 #driver.from_xyz('relax_large.xyz')
 
-driver.plot(scale=20.0, interactive=True)
-
-scipy.optimize.minimize(driver.free_energy, driver.u, jac=driver.jacobian,
-    method='BFGS', options=dict(gtol=1e-6, norm=np.inf))
-
-driver.plot(interactive=False)
-
-driver.to_xyz('relax_large.xyz')
+#driver.plot(scale=20.0, interactive=True)
+#
+#scipy.optimize.minimize(driver.free_energy, driver.u, jac=driver.jacobian,
+#    method='BFGS', options=dict(gtol=1e-6, norm=np.inf))
+#
+#driver.plot(interactive=False)
+#
+#driver.to_xyz('relax_large.xyz')
 
 if len(sys.argv) > 1:
     idoping = int(sys.argv[1])
-    dopings = dopings[idoping - 1:idoping]
+    dopings = dopings[idoping - 1::6]
     filename = 'relax_large_%d.dat' % idoping
 else:
     filename = 'relax_large.dat'

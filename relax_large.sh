@@ -1,8 +1,8 @@
 #!/bin/bash
 #SBATCH --nodes 1
 #SBATCH --tasks-per-node 96
-#SBATCH --partition standard96:test
-#SBATCH --time 01:00:00
+#SBATCH --partition standard96
+#SBATCH --time 12:00:00
 
 module load anaconda3 intel impi
 
