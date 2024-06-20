@@ -104,7 +104,8 @@ for doping in dopings:
 
     driver.n = (2 + doping) * len(driver.elph.cells)
 
-    driver.from_xyz('relax_large.xyz')
+    #relaxed()
+    triangles()
 
     scipy.optimize.minimize(driver.free_energy, driver.u, jac=driver.jacobian,
         method='BFGS', options=dict(gtol=1e-6, norm=np.inf))

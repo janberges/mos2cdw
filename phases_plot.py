@@ -48,7 +48,7 @@ plot.line(doping[CDW], Tc[CDW], color='blue', mark='*')
 plot.line(doping[SYM], Tc[SYM], color='blue', mark='*',
     label=r'$T_{\mathrm c}$ (K)')
 
-doping, lamda, wlog, w2nd, Tc, u = np.loadtxt('relax_large.dat', skiprows=1).T
+doping, lamda, wlog, w2nd, Tc, u = np.loadtxt('relax_large_2x2.dat', skiprows=1).T
 
 style = dict(only_marks=True, mark_size='0.75pt')
 
