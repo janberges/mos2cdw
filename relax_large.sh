@@ -4,7 +4,10 @@
 #SBATCH --partition standard96
 #SBATCH --time 12:00:00
 
-module load anaconda3 intel impi
+module load intel-oneapi-compilers
+module load intel-oneapi-mpi
+module load intel-oneapi-mkl
+module load miniconda3
 
 cd $SLURM_SUBMIT_DIR
 
