@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python3 -i
 
 import elphmod
 import numpy as np
@@ -61,26 +61,45 @@ def triangles():
 def random():
     driver.random_displacements()
 
-def triangle():
+def triangle(atoms=[658, 661, 712], amplitude=0.2):
     driver.u[:] = 0.0
-
-    atoms = [598, 601, 655]
 
     center = np.average(driver.elph.ph.r[atoms], axis=0)
 
     for atom in atoms:
         u = center - driver.elph.ph.r[atom]
-        u *= 0.2 / np.linalg.norm(u)
+        u *= amplitude / np.linalg.norm(u)
 
         driver.u[3 * atom:3 * atom + 3] = u
 
 def relaxed():
     driver.from_xyz('relax_large.xyz')
 
-#driver.plot(scale=20.0, interactive=True)
-#
-#scipy.optimize.minimize(driver.free_energy, driver.u, jac=driver.jacobian,
-#    method='BFGS', options=dict(gtol=1e-6, norm=np.inf))
+def optimize():
+    scipy.optimize.minimize(driver.free_energy, driver.u, jac=driver.jacobian,
+        method='BFGS', options=dict(gtol=1e-6, norm=np.inf))
+
+driver.plot(scale=20.0, interactive=True)
+
+raise SystemExit
+
+# 12 sqrt(3):
+#triangle(atoms=[658, 661, 712], amplitude=0.2)
+#triangle(atoms=[601, 655, 658], amplitude=-0.2)
+
+# 18 sqrt(3):
+#triangle(atoms=[1471, 1474, 1555], amplitude=0.2)
+#triangle(atoms=[1390, 1468, 1471], amplitude=-0.2)
+
+# 18:
+#triangle(atoms=[457, 460, 514], amplitude=0.2)
+#triangle(atoms=[514, 568, 571], amplitude=-0.2)
+
+# 27:
+#triangle(atoms=[1009, 1012, 1093], amplitude=0.2)
+#triangle(atoms=[1093, 1174, 1177], amplitude=-0.2)
+
+#optimize()
 #
 #driver.plot(interactive=False)
 #
@@ -108,8 +127,7 @@ for doping in dopings:
     #triangles()
     triangle()
 
-    scipy.optimize.minimize(driver.free_energy, driver.u, jac=driver.jacobian,
-        method='BFGS', options=dict(gtol=1e-6, norm=np.inf))
+    optimize()
 
     driver.to_xyz('relax_large_%.2f.xyz' % doping)
 
