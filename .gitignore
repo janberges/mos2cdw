@@ -1,11 +1,17 @@
+*.aux
 *.log
+*.nav
+*.out
 *.pdf
 *.png
+*.snm
 *.tex
+*.toc
 MoS2_3*
 __pycache__
 model.epmatwp
 model.wigner
 mos2*
 relax_small.xyz
+relax_supercell/*.xyz
 slurm-*.out
