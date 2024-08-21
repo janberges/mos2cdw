@@ -65,28 +65,23 @@ def triangles():
 
 def optimize():
     scipy.optimize.minimize(driver.free_energy, driver.u, jac=driver.jacobian,
-        method='BFGS', options=dict(gtol=1e-6, norm=np.inf))
+        method='BFGS', options=dict(gtol=1e-5, norm=np.inf))
 
-for driver.n in np.arange(np.ceil(
-    2.2 * len(driver.elph.cells)),
-    2.4 * len(driver.elph.cells)):
+dopings = np.linspace(0.25, 0.35, 11)
 
-    info('Number of electrons: %d' % driver.n)
+for doping in dopings:
+    driver.n = (2 + doping) * len(driver.elph.cells)
 
-    info('Inward triangle')
+    info('Doping: %g' % doping)
+
+    info('Polaron')
 
     triangle(atoms=[457, 460, 514], amplitude=0.2)
     optimize()
-    driver.to_xyz('relax_18_inward_%d.xyz' % driver.n)
+    driver.to_xyz('relax_18_polaron_%.2f.xyz' % doping)
 
-    info('Outward triangle')
-
-    triangle(atoms=[514, 568, 571], amplitude=-0.2)
-    optimize()
-    driver.to_xyz('relax_18_outward_%d.xyz' % driver.n)
-
-    info('Triangle CDW')
+    info('CDW')
 
     triangles()
     optimize()
-    driver.to_xyz('relax_18_cdw_%d.xyz' % driver.n)
+    driver.to_xyz('relax_18_cdw_%.2f.xyz' % doping)
