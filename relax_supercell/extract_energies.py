@@ -7,7 +7,7 @@ energy = None
 doping = None
 init = None
 
-for cell, cells in ('18', 18 ** 2), ('12sqrt3', 12 ** 2 * 3), ('27', 27 ** 3), ('18sqrt3', 18 ** 2 * 3):
+for cell, cells in ('18', 18 ** 2), ('12sqrt3', 12 ** 2 * 3), ('27', 27 ** 2), ('18sqrt3', 18 ** 2 * 3):
     with open('relax_%s.out' % cell) as lines:
         while True:
             for line in lines:
