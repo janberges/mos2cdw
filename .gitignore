@@ -7,6 +7,7 @@
 *.snm
 *.tex
 *.toc
+*.txt
 MoS2_3*
 __pycache__
 model.epmatwp

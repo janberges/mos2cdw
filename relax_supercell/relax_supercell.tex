@@ -29,10 +29,20 @@
 \def\twentyseven{27}
 
 \begin{document}
-\foreach \cell\CELL in {18/18,12sqrt3/{12\sqrt3},27/27,18sqrt3/{18\sqrt3}} {%
+\foreach \cell\CELL in {12sqrt3/{12\sqrt3},18sqrt3/{18\sqrt3},18/18,27/27} {%
 \foreach \doping in {25,26,...,35} {%
-\begin{frame}{$\bm{\CELL \times \CELL}$ supercell, 0.\doping{} electrons per unit cell}
-    From single triangle ``polaron''\hfill From $2 \times 2$ CDW\ifx\cell\twentyseven~(with line defect)\fi
+\begin{frame}{$\bm{\CELL \times \CELL}$ supercell, 0.\doping{} doping electrons per unit cell}
+    \hspace*{-0.04\linewidth}%
+    \begin{minipage}{0.55\linewidth}
+        From triangle ``polaron''
+        ($\input{relax_\cell_polaron_0.\doping.txt}$~mRy/u.c.)
+    \end{minipage}%
+    \begin{minipage}{0.55\linewidth}
+        From $2 \times 2$
+        \ifx\cell\twentyseven + line defect\else CDW\fi{}
+        ($\input{relax_\cell_cdw_0.\doping.txt}$~mRy/u.c.)
+    \end{minipage}%
+    \hspace*{-0.06\linewidth}%
 
     \hspace*{-0.05\linewidth}%
     \includegraphics[width=0.55\linewidth]{relax_\cell_polaron_0.\doping.pdf}%
