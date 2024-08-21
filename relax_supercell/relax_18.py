@@ -89,4 +89,4 @@ for driver.n in np.arange(np.ceil(
 
     triangles()
     optimize()
-    driver.to_xyz('relax_18sqrt3_cdw_%d.xyz' % driver.n)
+    driver.to_xyz('relax_18_cdw_%d.xyz' % driver.n)
