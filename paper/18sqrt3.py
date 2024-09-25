@@ -110,6 +110,6 @@ for nel in range(start, stop, step):
 
         data.write(('%3d' + ' %9.6f' * 8 + '\n') % (nel, nel / cells,
             (E - E0) * elphmod.misc.Ry / cells,
-            (driver.driver.mu - mu0) * elphmod.misc.Ry,
-            np.linalg.norm(driver.u) * elphmod.misc.a0 / np.sqrt(cells)),
-            lamda, wlog, w2nd, Tc)
+            (driver.mu - mu0) * elphmod.misc.Ry,
+            np.linalg.norm(driver.u) * elphmod.misc.a0 / np.sqrt(cells),
+            lamda, wlog, w2nd, Tc))
