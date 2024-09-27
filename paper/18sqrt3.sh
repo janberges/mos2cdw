@@ -20,13 +20,13 @@ export VECLIB_MAXIMUM_THREADS=6
 
 #for nel in `seq -w 0 6 186`
 #for nel in `seq 192 6 240` `seq 342 6 474`
-#for nel in `seq 288 6 474`
 #for nel in `seq 480 6 666`
 for nel in `seq 243 274`
 #for nel in `seq 275 306`
 #for nel in `seq 307 338`
 do
     python3 18sqrt3.py $nel > 18sqrt3_$nel.out &
+    #python3 18sqrt3.py $nel > 18sqrt3_cdw_$nel.out &
 done
 
 wait
