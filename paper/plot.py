@@ -15,7 +15,7 @@ plot = storylines.Plot(
 
     grid=True,
 
-    lpos='tr',
+    lpos='tl',
     lopt='below right=1mm',
     lbox=True,
     )
