@@ -43,35 +43,36 @@ driver = elphmod.md.Driver(elph,
     unscreen=False,
 )
 
-driver.from_xyz(xyz)
+for xyz in sys.argv[1:]:
+    driver.from_xyz(xyz)
 
-r = driver.elph.ph.r
-u = driver.u.reshape((-1, 3))
-a = driver.elph.ph.a
-R = r + u
+    R = driver.elph.ph.r + driver.u.reshape((-1, 3))
 
-b0 = np.array(elphmod.bravais.reciprocals(*ph.a))
-b = np.array(elphmod.bravais.reciprocals(*a))
+    b = np.array(elphmod.bravais.reciprocals(*ph.a))
+    B = np.array(elphmod.bravais.reciprocals(*driver.elph.ph.a))
 
-nq = 55
-q = np.array([q1 * b[0] + q2 * b[1] for q1 in range(-nq, nq + 1) for q2 in range(-nq, nq + 1)])
+    nq = 100
 
-M1 = 54 * b[0]
-M2 = 54 * b[1]
-M3 = 54 * b[0] - 54 * b[1]
+    q = np.array([q1 * B[0] + q2 * B[1]
+        for q1 in range(-nq, nq + 1)
+        for q2 in range(-nq, nq + 1)])
 
-q = np.array([qxy for qxy in q
-    if abs(np.dot(qxy, M1)) / np.dot(M1, M1) <= 0.5 + 1e-8
-    and abs(np.dot(qxy, M2)) / np.dot(M2, M2) <= 0.5 + 1e-8
-    and abs(np.dot(qxy, M3)) / np.dot(M3, M3) <= 0.5 + 1e-8])
+    maxproj = 0.5 * np.dot(b[0], b[0]) + 1e-8
 
-S = abs(np.exp(-2j * np.pi * q.dot(R.T)).sum(axis=-1)) ** 2
-S = np.log(S)
+    q = np.array([qi for qi in q if
+        maxproj >= abs(np.dot(qi, b[0])) and
+        maxproj >= abs(np.dot(qi, b[1])) and
+        maxproj >= abs(np.dot(qi, b[0] - b[1]))])
 
-if comm.rank == 0:
-    plt.scatter(q[:, 0], q[:, 1], c=S, s=20, marker='h')
-    #plt.scatter(b0[:, 0], b0[:, 1], color='yellow', s=20, marker='h')
-    plt.axis('image')
-    plt.axis('off')
-    plt.savefig(xyz.replace('.xyz', '.png'))
+    # q are the Gamma points of the SC BZ within the UC BZ
 
+    S = abs(np.exp(-2j * np.pi * q.dot(R.T)).sum(axis=-1)) ** 2
+    S /= driver.elph.ph.nat ** 2
+
+    if comm.rank == 0:
+        plt.close()
+        plt.scatter(q[:, 0], q[:, 1], c=np.log(S), s=68, marker='h',
+            linewidth=0, aa=False, cmap='plasma')
+        plt.axis('image')
+        plt.axis('off')
+        plt.savefig(xyz.replace('.xyz', '.png'))
