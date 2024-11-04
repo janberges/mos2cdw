@@ -43,7 +43,12 @@ driver = elphmod.md.Driver(elph,
     unscreen=False,
 )
 
+minimum = +np.inf
+maximum = -np.inf
+
 for xyz in sys.argv[1:]:
+    info('Processing %s' % xyz)
+
     driver.from_xyz(xyz)
 
     R = driver.elph.ph.r + driver.u.reshape((-1, 3))
@@ -69,10 +74,16 @@ for xyz in sys.argv[1:]:
     S = abs(np.exp(-2j * np.pi * q.dot(R.T)).sum(axis=-1)) ** 2
     S /= driver.elph.ph.nat ** 2
 
+    minimum = min(np.log(S).min(), minimum)
+    maximum = max(np.log(S).max(), maximum)
+
     if comm.rank == 0:
         plt.close()
         plt.scatter(q[:, 0], q[:, 1], c=np.log(S), s=68, marker='h',
-            linewidth=0, aa=False, cmap='plasma')
+            linewidth=0, aa=False, vmin=-50.359216312684325, vmax=0.0)
+            #, cmap='plasma')
         plt.axis('image')
         plt.axis('off')
-        plt.savefig(xyz.replace('.xyz', '.png'))
+        plt.savefig(xyz.replace('.xyz', '.png'), bbox_inches='tight')
+
+print(minimum, maximum)
