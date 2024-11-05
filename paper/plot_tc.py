@@ -51,3 +51,34 @@ for group in elphmod.misc.group(nel1, 1.1):
 plot.line(xel2, Tc2, color='orange', label=r'$2 \times 2$ CDW')
 
 plot.save('tc_18sqrt3.pdf')
+
+plot.width = 5.0
+plot.height = 2.5
+plot.lput = False
+
+plot.xlabel = '$x$'
+plot.ylabel = r'$T_{\mathrm c}$ (K)'
+
+plot.xclose = True
+plot.yclose = True
+
+plot.xticks = [0.0, (0.1, None), (0.2, None), (0.3, None), (0.4, None), (0.5, None), 0.6]
+plot.yticks = [0.0, (10.0, None), (20.0, None), 30.0]
+
+plot.left = 0.5
+plot.bottom = 0.5
+
+for label, color, nel, xel, Tc in [
+    ('polaron', 'blue', nel0, xel0, Tc0),
+    ('polaron', 'brown', nel1, xel1, Tc1),
+    ('cdw', 'orange', nel2, xel2, Tc2),
+    ]:
+
+    for i in range(len(nel)):
+        print('%s%03d' % (label, nel[i]))
+
+        plot.line(xel[i], Tc[i], mark='*', color=color)
+
+        plot.save('png/%s%03dtc.png' % (label, nel[i]))
+
+        plot.lines.pop()
