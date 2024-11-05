@@ -1,0 +1,44 @@
+\documentclass[aspectratio=169]{beamer}
+
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{footline}{\hfill\scriptsize%
+  \insertframenumber/\inserttotalframenumber\kern0.5ex\vskip2pt}
+
+\hypersetup{colorlinks, allcolors=myblue}
+
+\setbeamerfont{title}{series=\bfseries}
+\setbeamerfont{frametitle}{series=\bfseries}
+\setbeamercolor{title}{fg=myblue}
+\setbeamercolor{frametitle}{fg=myblue}
+\setbeamercolor{structure}{fg=myblue}
+\setbeamercolor{normal text}{fg=myblue}
+
+\usefonttheme{professionalfonts}
+
+\usepackage[english]{babel}
+\usepackage[utf8]{inputenc}
+
+\usepackage[math]{iwona}
+\usepackage[T1]{fontenc}
+
+\usepackage{tikz, bm}
+
+\definecolor{myred}{RGB}{216, 186, 141}
+\definecolor{myblue}{RGB}{95, 151, 230}
+
+\def\twentyseven{27}
+
+\begin{document}
+\foreach \label in {polaron000,polaron006,polaron012,polaron018,polaron024,polaron030,polaron036,polaron042,polaron048,polaron054,polaron060,polaron066,polaron072,polaron078,polaron084,polaron090,polaron096,polaron102,polaron108,polaron114,polaron120,polaron126,polaron132,polaron138,polaron144,polaron150,polaron156,polaron162,polaron168,polaron174,polaron180,polaron186,polaron192,polaron198,polaron204,polaron210,polaron216,polaron222,polaron228,polaron234,polaron240,polaron243,polaron244,polaron245,polaron246,polaron247,polaron248,polaron249,polaron250,polaron251,polaron252,polaron253,polaron254,polaron255,polaron256,polaron257,polaron258,polaron259,polaron260,polaron261,polaron262,polaron263,polaron264,polaron265,polaron266,polaron267,polaron268,polaron269,polaron270,polaron271,polaron272,polaron273,polaron274,polaron275,polaron276,polaron277,polaron278,polaron279,polaron280,polaron281,polaron282,polaron283,polaron284,polaron285,polaron286,polaron287,polaron288,polaron289,polaron290,polaron291,polaron292,polaron293,polaron294,polaron295,polaron296,polaron297,polaron298,polaron299,polaron300,polaron301,polaron302,polaron303,polaron304,polaron305,polaron306,polaron307,polaron308,polaron309,polaron310,polaron311,polaron312,polaron313,polaron314,polaron315,polaron316,polaron317,polaron318,polaron319,polaron320,polaron321,polaron322,polaron323,polaron324,polaron325,polaron326,polaron327,polaron328,polaron329,polaron330,polaron331,polaron332,polaron333,polaron334,polaron335,polaron336,polaron337,polaron338,polaron342,polaron348,polaron354,polaron360,polaron366,polaron372,polaron378,polaron384,polaron390,polaron396,polaron402,polaron408,polaron414,polaron420,polaron426,polaron432,polaron438,polaron444,polaron450,polaron456,polaron462,polaron468,polaron474,polaron480,polaron486,polaron492,polaron498,polaron504,polaron510,polaron516,polaron522,polaron528,polaron534,polaron540,polaron546,polaron552,polaron564,polaron570,polaron576,polaron582,polaron588,polaron594,polaron600,polaron606,polaron612,polaron618,polaron624,polaron630,polaron642,polaron648,polaron654,polaron660,polaron666,cdw249,cdw250,cdw251,cdw252,cdw253,cdw254,cdw255,cdw256,cdw257,cdw258,cdw259,cdw260,cdw261,cdw262,cdw263,cdw264,cdw265,cdw266,cdw267,cdw268,cdw269,cdw270,cdw271,cdw272,cdw273,cdw274,cdw275,cdw276,cdw277,cdw278,cdw279,cdw280,cdw281,cdw282,cdw283,cdw284,cdw285,cdw286,cdw287,cdw288,cdw289,cdw291,cdw292,cdw293,cdw294,cdw295,cdw296,cdw297,cdw299,cdw300,cdw303,cdw304,cdw306,cdw307,cdw308,cdw309,cdw310,cdw311,cdw312,cdw313,cdw314,cdw315,cdw316,cdw317,cdw318,cdw319,cdw320,cdw321,cdw322,cdw323,cdw324,cdw325,cdw326,cdw327,cdw328,cdw329,cdw330,cdw331,cdw332,cdw333,cdw334,cdw335,cdw336,cdw337,cdw338,cdw342,cdw348,cdw354,cdw360,cdw366,cdw372,cdw378,cdw384,cdw390,cdw396,cdw402,cdw408,cdw414,cdw420,cdw426,cdw432,cdw438,cdw444,cdw450,cdw456,cdw462,cdw468,cdw474,cdw480,cdw486,cdw492,cdw498,cdw504,cdw510,cdw516,cdw522,cdw528,cdw534,cdw540,cdw546,cdw552,cdw558,cdw564,cdw570,cdw576,cdw582,cdw588,cdw594,cdw600,cdw606,cdw612,cdw618,cdw624,cdw630,cdw636,cdw642,cdw648,cdw654,cdw660,cdw666} {%
+\begin{frame}
+    \hspace*{-0.05\linewidth}%
+    \raisebox{-0.5\height}{\includegraphics[width=0.65\linewidth]{png/\label.png}}%
+    \begin{minipage}{0.45\linewidth}
+        \vspace*{4mm}%
+        \includegraphics[width=\linewidth]{png/\label tc.png}\\[-2mm]
+        \includegraphics[width=\linewidth]{xyz/\label.png}%
+    \end{minipage}%
+    \hspace*{-0.05\linewidth}%
+\end{frame}
+}%
+\end{document}
