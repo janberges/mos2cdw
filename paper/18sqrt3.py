@@ -92,10 +92,11 @@ for nel in range(start, stop, step):
 
     E = driver.free_energy()
 
-    lamda, wlog, w2nd = driver.superconductivity()
+    lamda, wlog, w2nd, wmin = driver.superconductivity()
 
     wlog *= elphmod.misc.Ry
     w2nd *= elphmod.misc.Ry
+    wmin *= elphmod.misc.Ry
 
     Tc = elphmod.eliashberg.Tc(lamda, wlog, 0.0, w2nd, correct=True)
 
@@ -105,11 +106,12 @@ for nel in range(start, stop, step):
         continue
 
     with open('polaron%03d.dat' % nel, 'w') as data:
-        data.write(('%3s' + ' %9s' * 8 + '\n') % ('nel', 'xel',
-            'dE/eV', 'mu/eV', '|u|/AA', 'lamda', 'wlog/eV', 'w2nd/eV', 'Tc/K'))
+        data.write(('%3s' + ' %9s' * 9 + '\n') % ('nel', 'xel',
+            'dE/eV', 'mu/eV', '|u|/AA', 'lamda', 'wlog/eV', 'w2nd/eV', 'wmin/eV',
+            'Tc/K'))
 
-        data.write(('%3d' + ' %9.6f' * 8 + '\n') % (nel, nel / cells,
+        data.write(('%3d' + ' %9.6f' * 9 + '\n') % (nel, nel / cells,
             (E - E0) * elphmod.misc.Ry / cells,
             (driver.mu - mu0) * elphmod.misc.Ry,
             np.linalg.norm(driver.u) * elphmod.misc.a0 / np.sqrt(cells),
-            lamda, wlog, w2nd, Tc))
+            lamda, wlog, w2nd, wmin, Tc))

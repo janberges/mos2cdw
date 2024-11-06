@@ -133,7 +133,7 @@ for doping in dopings:
 
     driver.diagonalize()
 
-    lamda, wlog, w2nd = driver.superconductivity(kT=0.01)
+    lamda, wlog, w2nd, wmin = driver.superconductivity(kT=0.01)
 
     wlog *= elphmod.misc.Ry
     w2nd *= elphmod.misc.Ry
