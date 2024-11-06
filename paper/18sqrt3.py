@@ -54,7 +54,7 @@ def triangles(distortion=0.02, amplitude=0.1):
     u = amplitude * np.array([1.0, 0.0])
 
     for n, (i, j, k) in enumerate(driver.elph.cells):
-        for I, J, twelfth in (1, 1, 3), (0, 0, 7), (1, 0, 11):
+        for I, J, twelfth in (1, 0, 3), (0, 1, 7), (1, 1, 11):
             if i % 2 == I and j % 2 == J:
                 driver.u[n * dim + 3:n * dim + 5] = elphmod.bravais.rotate(u,
                     twelfth * np.pi / 6)
