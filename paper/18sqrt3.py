@@ -11,6 +11,8 @@ info = elphmod.MPI.info
 nel = int(sys.argv[1]) if len(sys.argv) > 1 else 0
 ini = str(sys.argv[2]) if len(sys.argv) > 2 else 'cdw'
 
+mustar = 0.13
+
 pw = elphmod.bravais.read_pwi('../dft/MoS2.pwi')
 
 el = elphmod.el.Model('../dft/MoS2_3', rydberg=True)
@@ -90,7 +92,7 @@ wlog *= elphmod.misc.Ry
 w2nd *= elphmod.misc.Ry
 wmin *= elphmod.misc.Ry
 
-Tc = elphmod.eliashberg.Tc(lamda, wlog, 0.0, w2nd, correct=True)
+Tc = elphmod.eliashberg.Tc(lamda, wlog, mustar, w2nd, correct=True)
 
 info('The critical temperature is %g K.' % Tc)
 
