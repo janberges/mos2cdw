@@ -18,15 +18,18 @@ export OMP_NUM_THREADS=6
 export OPENBLAS_NUM_THREADS=6
 export VECLIB_MAXIMUM_THREADS=6
 
-#for nel in `seq -w 0 6 186`
-#for nel in `seq 192 6 240` `seq 342 6 474`
-#for nel in `seq 480 6 666`
-for nel in `seq 243 274`
-#for nel in `seq 275 306`
-#for nel in `seq 307 338`
+#ini=cdw
+ini=polaron
+#nel=`seq -w 0 6 186`
+#nel=`seq 192 6 246` `seq 348 6 474`
+nel=`seq 247 278`
+#nel=`seq 279 310`
+#nel=`seq 311 342`
+#nel=`seq 480 6 666`
+
+for n in $nel
 do
-    python3 18sqrt3.py $nel > 18sqrt3_$nel.out &
-    #python3 18sqrt3.py $nel > 18sqrt3_cdw_$nel.out &
+    python3 18sqrt3.py $n $ini > $ini$n.out &
 done
 
 wait

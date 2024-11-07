@@ -8,6 +8,9 @@ import sys
 comm = elphmod.MPI.comm
 info = elphmod.MPI.info
 
+nel = int(sys.argv[1]) if len(sys.argv) > 1 else 0
+ini = str(sys.argv[2]) if len(sys.argv) > 2 else 'cdw'
+
 pw = elphmod.bravais.read_pwi('../dft/MoS2.pwi')
 
 el = elphmod.el.Model('../dft/MoS2_3', rydberg=True)
@@ -61,54 +64,41 @@ def triangles(distortion=0.02, amplitude=0.1):
 
     driver.u += random
 
-def optimize():
-    scipy.optimize.minimize(driver.free_energy, driver.u, jac=driver.jacobian,
-        method='BFGS', options=dict(gtol=1e-5, norm=np.inf))
+symmetric()
 
 driver.diagonalize()
-
 mu0 = driver.mu
 
-start = int(sys.argv[1]) if len(sys.argv) > 1 else 0
-stop = int(sys.argv[2]) if len(sys.argv) > 2 else start + 1
-step = int(sys.argv[3]) if len(sys.argv) > 3 else 1
+driver.n = 2 * cells + nel
+E0 = driver.free_energy()
 
-for nel in range(start, stop, step):
-    info('Number of doping electrons: %g' % nel)
-
-    driver.n = 2 * cells + nel
-
-    symmetric()
-
-    E0 = driver.free_energy()
-
+if 'cdw' in ini:
+    triangles()
+elif 'polaron' in ini:
     triangle()
-    optimize()
-    driver.to_xyz('polaron%03d.xyz' % nel)
 
-    #triangles()
-    #optimize()
-    #driver.to_xyz('cdw%03d.xyz' % nel)
+scipy.optimize.minimize(driver.free_energy, driver.u, jac=driver.jacobian,
+    method='BFGS', options=dict(gtol=1e-5, norm=np.inf))
 
-    E = driver.free_energy()
+driver.to_xyz('%s%03d.xyz' % (ini, nel))
 
-    lamda, wlog, w2nd, wmin = driver.superconductivity()
+E = driver.free_energy()
 
-    wlog *= elphmod.misc.Ry
-    w2nd *= elphmod.misc.Ry
-    wmin *= elphmod.misc.Ry
+lamda, wlog, w2nd, wmin = driver.superconductivity()
 
-    Tc = elphmod.eliashberg.Tc(lamda, wlog, 0.0, w2nd, correct=True)
+wlog *= elphmod.misc.Ry
+w2nd *= elphmod.misc.Ry
+wmin *= elphmod.misc.Ry
 
-    info('The critical temperature is %g K.' % Tc)
+Tc = elphmod.eliashberg.Tc(lamda, wlog, 0.0, w2nd, correct=True)
 
-    if comm.rank != 0:
-        continue
+info('The critical temperature is %g K.' % Tc)
 
-    with open('polaron%03d.dat' % nel, 'w') as data:
+if comm.rank == 0:
+    with open('%s%03d.dat' % (ini, nel), 'w') as data:
         data.write(('%3s' + ' %9s' * 9 + '\n') % ('nel', 'xel',
-            'dE/eV', 'mu/eV', '|u|/AA', 'lamda', 'wlog/eV', 'w2nd/eV', 'wmin/eV',
-            'Tc/K'))
+            'dE/eV', 'mu/eV', '|u|/AA',
+            'lamda', 'wlog/eV', 'w2nd/eV', 'wmin/eV', 'Tc/K'))
 
         data.write(('%3d' + ' %9.6f' * 9 + '\n') % (nel, nel / cells,
             (E - E0) * elphmod.misc.Ry / cells,
