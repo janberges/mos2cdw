@@ -4,10 +4,10 @@ import elphmod
 import numpy as np
 import storylines
 
-nel1, xel1, dE1, mu1, u1, lamda1, wlog1, w2nd1, Tc1 = np.loadtxt('polaron.dat',
+nel1, xel1, dE1, mu1, u1, lamda1, wlog1, w2nd1, wmin, Tc1 = np.loadtxt('polaron_new.dat',
     skiprows=1).T
 
-nel2, xel2, dE2, mu2, u2, lamda2, wlog2, w2nd2, Tc2 = np.loadtxt('cdw.dat',
+nel2, xel2, dE2, mu2, u2, lamda2, wlog2, w2nd2, wmin, Tc2 = np.loadtxt('cdw_new.dat',
     skiprows=1).T
 
 pol = u1 > 2e-3

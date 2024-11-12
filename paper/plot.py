@@ -23,7 +23,7 @@ plot = storylines.Plot(
 plot.height = plot.width
 
 for file in 'polaron', 'cdw':
-    nel, xel, dE, mu, u, lamda, wlog, w2nd, Tc = np.loadtxt('%s.dat' % file,
+    nel, xel, dE, mu, u, lamda, wlog, w2nd, wmin, Tc = np.loadtxt('%s_new.dat' % file,
         skiprows=1).T
 
     if file == 'polaron':
