@@ -13,7 +13,7 @@ nel2, xel2, dE2, mu2, u2, lamda2, wlog2, w2nd2, wmin2, Tc2 = np.loadtxt(s
 u_thr = 2e-3
 
 pol = (wmin1 >= 0) & (u1 >= u_thr)
-sym = (wmin1 >= 0) & (u1 < u_thr)
+sym = (wmin1 >= 0) & (abs(u1) < u_thr)
 cdw = (wmin2 >= 0) & (u2 >= u_thr)
 
 (nels, xels, dEs, mus, us, lamdas, wlogs, w2nds, wmins, Tcs) = (nel1[sym],
