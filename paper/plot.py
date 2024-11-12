@@ -4,24 +4,29 @@ import elphmod
 import numpy as np
 import storylines
 
-nel1, xel1, dE1, mu1, u1, lamda1, wlog1, w2nd1, wmin, Tc1 = np.loadtxt('polaron_new.dat',
-    skiprows=1).T
+nel1, xel1, dE1, mu1, u1, lamda1, wlog1, w2nd1, wmin1, Tc1 = np.loadtxt(
+    'polaron_new.dat', skiprows=1).T
 
-nel2, xel2, dE2, mu2, u2, lamda2, wlog2, w2nd2, wmin, Tc2 = np.loadtxt('cdw_new.dat',
-    skiprows=1).T
+nel2, xel2, dE2, mu2, u2, lamda2, wlog2, w2nd2, wmin2, Tc2 = np.loadtxt(s
+    'cdw_new.dat', skiprows=1).T
 
-pol = u1 > 2e-3
-sym = ~pol
-cdw = u2 > 2e-3
+u_thr = 2e-3
 
-(nel0, xel0, dE0, mu0, u0, lamda0, wlog0, w2nd0, Tc0) = (nel1[sym], xel1[sym],
-    dE1[sym], mu1[sym], u1[sym], lamda1[sym], wlog1[sym], w2nd1[sym], Tc1[sym])
+pol = (wmin1 >= 0) & (u1 >= u_thr)
+sym = (wmin1 >= 0) & (u1 < u_thr)
+cdw = (wmin2 >= 0) & (u2 >= u_thr)
 
-(nel1, xel1, dE1, mu1, u1, lamda1, wlog1, w2nd1, Tc1) = (nel1[pol], xel1[pol],
-    dE1[pol], mu1[pol], u1[pol], lamda1[pol], wlog1[pol], w2nd1[pol], Tc1[pol])
+(nels, xels, dEs, mus, us, lamdas, wlogs, w2nds, wmins, Tcs) = (nel1[sym],
+    xel1[sym], dE1[sym], mu1[sym], u1[sym], lamda1[sym], wlog1[sym], w2nd1[sym],
+    wmin1[sym], Tc1[sym])
 
-(nel2, xel2, dE2, mu2, u2, lamda2, wlog2, w2nd2, Tc2) = (nel2[cdw], xel2[cdw],
-    dE2[cdw], mu2[cdw], u2[cdw], lamda2[cdw], wlog2[cdw], w2nd2[cdw], Tc2[cdw])
+(nelp, xelp, dEp, mup, up, lamdap, wlogp, w2ndp, wminp, Tcp) = (nel1[pol],
+    xel1[pol], dE1[pol], mu1[pol], u1[pol], lamda1[pol], wlog1[pol], w2nd1[pol],
+    wmin1[pol], Tc1[pol])
+
+(nelc, xelc, dEc, muc, uc, lamdac, wlogc, w2ndc, wminc, Tcc) = (nel2[cdw],
+    xel2[cdw], dE2[cdw], mu2[cdw], u2[cdw], lamda2[cdw], wlog2[cdw], w2nd2[cdw],
+    wmin2[cdw], Tc2[cdw])
 
 plot = storylines.Plot(
     style='APS',
@@ -34,21 +39,26 @@ plot = storylines.Plot(
     ylabel='Critical temperature (K)',
 
     xstep=0.1,
+    ystep=5.0,
+    ymax=22.5,
 
     grid=True,
 
     lpos='cb',
-    lopt='above=2mm',
-    lbox=True)
+    lopt='above=5mm',
+    lbox=True,
 
-plot.line(xel0, Tc0, color='blue', label='undistorted')
+    mark_size='0.8pt',
+    )
 
-for group in elphmod.misc.group(nel1, 1.1):
-    plot.line(xel1[group], Tc1[group], color='brown',
-        mark='asterisk' if len(group) == 1 else None,
-        label='polaron' if len(group) == 1 else None)
+plot.line(xels, Tcs, color='blue', thick=True, label='undistorted')
 
-plot.line(xel2, Tc2, color='orange', label=r'$2 \times 2$ CDW')
+plot.line(xelc, Tcc, color='orange', thick=True, label=r'$2 \times 2$ CDW')
+
+for group in elphmod.misc.group(nelp, 1.1):
+    plot.line(xelp[group], Tcp[group], color='brown', thick=True,
+        mark='*' if len(group) == 1 else None,
+        label='other' if len(group) > 1 else None)
 
 plot.save('tc_18sqrt3.pdf')
 
@@ -56,29 +66,23 @@ plot.width = 5.0
 plot.height = 2.5
 plot.lput = False
 
-plot.xlabel = '$x$'
-plot.ylabel = r'$T_{\mathrm c}$ (K)'
+plot.xlabel = None
+plot.ylabel = None
 
 plot.xclose = True
 plot.yclose = True
 
-plot.xticks = [0.0, (0.1, None), (0.2, None), (0.3, None), (0.4, None), (0.5, None), 0.6]
-plot.yticks = [0.0, (10.0, None), (20.0, None), 30.0]
+plot.yticks = [0.0, 10.0, (20.0, None)]
 
-plot.left = 0.5
-plot.bottom = 0.5
+plot.left = 0.4
+plot.bottom = 0.4
 
-for label, color, nel, xel, Tc in [
-    ('polaron', 'blue', nel0, xel0, Tc0),
-    ('polaron', 'brown', nel1, xel1, Tc1),
-    ('cdw', 'orange', nel2, xel2, Tc2),
-    ]:
+plot.node(0, 19, r'$T_{\mathrm c}$ (K)', rotate=90, above=True)
+plot.node(0.68, 0, r'$x$', below='1mm')
 
-    for i in range(len(nel)):
-        print('%s%03d' % (label, nel[i]))
+for i in range(len(xel1)):
+    plot.line(x=xel1[i], zindex=0)
 
-        plot.line(xel[i], Tc[i], mark='*', color=color)
+    plot.save('tc_18sqrt3_%03d.pdf' % nel1[i])
 
-        plot.save('png/%s%03dtc.png' % (label, nel[i]))
-
-        plot.lines.pop()
+    plot.lines.pop(0)

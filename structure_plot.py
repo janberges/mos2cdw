@@ -103,6 +103,6 @@ for xyz in sys.argv[1:]:
                 [R[na, 1], R[na, 1] + scale * u[na, 1]],
                 line_width=max(0.3, 5 * np.linalg.norm(u[na, :2])), **arrow)
 
-    plot.save(xyz.replace('xyz', 'png'))
+    plot.save(xyz.replace('.xyz', '.png'))
 
 driver.plot(interactive=False)

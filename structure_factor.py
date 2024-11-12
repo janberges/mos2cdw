@@ -84,6 +84,6 @@ for xyz in sys.argv[1:]:
             #, cmap='plasma')
         plt.axis('image')
         plt.axis('off')
-        plt.savefig(xyz.replace('.xyz', '.png'), bbox_inches='tight')
+        plt.savefig(xyz.replace('.xyz', '_ft.png'), bbox_inches='tight')
 
 print(minimum, maximum)
