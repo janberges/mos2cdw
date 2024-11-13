@@ -62,16 +62,17 @@ ax.plot(xels * scale, Tcs, color='teal', label=r'$1 \times 1$ H')
 ax.plot(xelc * scale, Tcc, color='coral', label=r'$2 \times 2$ CDW')
 
 scatter = []
-labeled = False
+lines = []
 
 for group in elphmod.misc.group(nelp, 1.1):
     if len(group) == 1:
         scatter.extend(group)
     else:
-        ax.plot(xelp[group] * scale, Tcp[group], color='slategray',
-            label=None if labeled else 'other')
+        lines.append(group)
 
-        labeled = True
+for n, line in enumerate(lines):
+    ax.plot(xelp[line] * scale, Tcp[line], color='slategray',
+        label=None if n else 'other')
 
 ax.scatter(xelp[scatter] * scale, Tcp[scatter], c='slategray', s=10)
 
@@ -83,9 +84,66 @@ ax.tick_params('both', size=4, direction='in', top=True, right=True, which='mino
 
 ax.set_xlim(x[0], x[-1])
 ax.set_ylim(ymin, ymax)
+ax.xaxis.set_major_locator(matplotlib.ticker.MultipleLocator(base=1.0))
 
 ax.set_yscale('log')
 
-ax.legend(frameon=False, loc='upper left', handlelength=0.7, ncol=1, fontsize=16)
+legendstyle = dict(frameon=False, handlelength=0.7, ncol=1)
+
+ax.legend(loc='upper left', fontsize=16, **legendstyle)
 
 fig.savefig('plot.pdf')
+
+fig, ax = matplotlib.pyplot.subplots(1, 3, figsize=(14, 7), sharey='row',
+    width_ratios=(nels.ptp(), nelc.ptp(), nelp.ptp()))
+
+fig.subplots_adjust(0.20, 0.12, 0.97, 0.94, wspace=0.05)
+
+colors = ['black', 'teal', 'gray', 'lightgray', 'tomato', 'chocolate']
+
+ax[0].plot(xels * scale, Tcs, color=colors[0], label=r'$T_{\mathrm{c}}$ [K]')
+ax[0].plot(xels * scale, lamdas, color=colors[1], label=r'$\lambda$')
+ax[0].plot(xels * scale, wlogs * 1e3, color=colors[2],
+    label=r'$\omega_{\mathrm{log}}$ [meV]')
+ax[0].plot(xels * scale, w2nds * 1e3, color=colors[3],
+    label=r'$\omega_{\mathrm{2nd}}$ [meV]')
+ax[0].plot(xels * scale, -dEs * 1e3, color=colors[4], label=r'$\Delta E$ [meV]')
+ax[0].plot(xels * scale, us * 1e2, color=colors[5], label=r'$|u|$ [pm]')
+
+ax[0].set_title(r'$1 \times 1$ H')
+ax[0].set_xlim(xels.min() * scale, xels.max() * scale)
+ax[0].legend(loc='right', bbox_to_anchor=(-0.15, 0.5), **legendstyle)
+
+ax[1].plot(xelc * scale, Tcc, color=colors[0])
+ax[1].plot(xelc * scale, lamdac, color=colors[1])
+ax[1].plot(xelc * scale, wlogc * 1e3, color=colors[2])
+ax[1].plot(xelc * scale, w2ndc * 1e3, color=colors[3])
+ax[1].plot(xelc * scale, -dEc * 1e3, color=colors[4])
+ax[1].plot(xelc * scale, uc * 1e2, color=colors[5])
+
+ax[1].set_title(r'$2 \times 2$ CDW')
+ax[1].set_xlim(xelc.min() * scale, xelc.max() * scale)
+ax[1].set_xlabel('$n$ [$10^{14}\,\mathrm{cm}^{-2}$]')
+
+for line in lines:
+    ax[2].plot(xelp[line] * scale, Tcp[line], color=colors[0])
+    ax[2].plot(xelp[line] * scale, lamdap[line], color=colors[1])
+    ax[2].plot(xelp[line] * scale, wlogp[line] * 1e3, color=colors[2])
+    ax[2].plot(xelp[line] * scale, w2ndp[line] * 1e3, color=colors[3])
+    ax[2].plot(xelp[line] * scale, -dEp[line] * 1e3, color=colors[4])
+    ax[2].plot(xelp[line] * scale, up[line] * 1e2, color=colors[5])
+
+ax[2].scatter(xelp[scatter] * scale, Tcp[scatter], c=colors[0], s=10)
+ax[2].scatter(xelp[scatter] * scale, lamdap[scatter], c=colors[1], s=10)
+ax[2].scatter(xelp[scatter] * scale, wlogp[scatter] * 1e3, c=colors[2], s=10)
+ax[2].scatter(xelp[scatter] * scale, w2ndp[scatter] * 1e3, c=colors[3], s=10)
+ax[2].scatter(xelp[scatter] * scale, -dEp[scatter] * 1e3, c=colors[4], s=10)
+ax[2].scatter(xelp[scatter] * scale, up[scatter] * 1e2, c=colors[5], s=10)
+
+ax[2].set_title('other')
+ax[2].set_xlim(xelp.min() * scale, xelp.max() * scale)
+
+for a in ax:
+    a.xaxis.set_major_locator(matplotlib.ticker.MultipleLocator(base=1.0))
+
+fig.savefig('plot_si.pdf')
