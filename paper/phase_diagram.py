@@ -61,7 +61,7 @@ for group in elphmod.misc.group(nelp, 1.1):
         mark='*' if len(group) == 1 else None,
         label='other' if len(group) > 1 else None)
 
-plot.save('tc_18sqrt3.pdf')
+plot.save('phase_diagram_tc.pdf')
 
 plot.width = 5.0
 plot.height = 2.5
