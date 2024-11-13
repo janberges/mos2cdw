@@ -96,6 +96,8 @@ legendstyle = dict(frameon=False, handlelength=0.7, ncol=1)
 
 ax.legend(loc='upper left', fontsize=16, **legendstyle)
 
+ax.text(-0.15, 1, '(d)', transform=ax.transAxes)
+
 def load_xyz(xyz):
     with open(xyz) as lines:
         nat = int(next(lines))
@@ -120,12 +122,12 @@ logS_max = -np.inf
 length_min = +np.inf
 length_max = -np.inf
 
-for ax, label in [
-        (axes[0, 0], 'polaron248'),
-        (axes[0, 1], 'polaron259'),
-        (axes[0, 2], 'polaron333'),
-        (axes[1, 1], 'cdw462'),
-        (axes[1, 2], 'polaron462'),
+for abc, ax, label in [
+        ('a', axes[0, 0], 'polaron248'),
+        ('b', axes[0, 1], 'polaron259'),
+        ('c', axes[0, 2], 'polaron333'),
+        ('e', axes[1, 1], 'cdw462'),
+        ('f', axes[1, 2], 'polaron462'),
         ]:
 
     A, typ, R0 = load_xyz('symmetric.xyz')
@@ -237,6 +239,8 @@ for ax, label in [
     ax.quiver(*R[ok, :2].T, *scale * u[ok, :2].T, angles='xy', scale_units='xy',
         scale=1, width=0.005, headwidth=4, headlength=3, headaxislength=3,
         zorder=3)
+
+    ax.text(0, 1, '(%s)' % abc, transform=ax.transAxes)
 
 print(logS_min, logS_max)
 print(length_min, length_max)
