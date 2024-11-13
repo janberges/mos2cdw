@@ -10,7 +10,7 @@ matplotlib.rc('font', size=16)
 
 fig, axes = plt.subplots(2, 3, figsize=(21, 12))
 
-fig.subplots_adjust(0.05, 0.05, 0.98, 0.98, wspace=0.05, hspace=0.05)
+fig.subplots_adjust(0.06, 0.06, 1.0, 0.98, wspace=0.1, hspace=0.05)
 
 nel1, xel1, dE1, mu1, u1, lamda1, wlog1, w2nd1, wmin1, Tc1 = np.loadtxt(
     'polaron_new.dat', skiprows=1).T
@@ -96,7 +96,7 @@ legendstyle = dict(frameon=False, handlelength=0.7, ncol=1)
 
 ax.legend(loc='upper left', fontsize=16, **legendstyle)
 
-ax.text(-0.15, 1, '(d)', transform=ax.transAxes)
+ax.text(-0.15, 0.95, '(d)', transform=ax.transAxes)
 
 annotation = dict(textcoords='offset points', arrowprops=dict(arrowstyle='->'),
     ha='center', va='center')
@@ -258,7 +258,7 @@ for abc, ax, label in [
         scale=1, width=0.005, headwidth=4, headlength=3, headaxislength=3,
         zorder=3)
 
-    ax.text(0, 1, '(%s)' % abc, transform=ax.transAxes)
+    ax.text(-0.05, 0.95, '(%s)' % abc, transform=ax.transAxes)
 
 print(logS_min, logS_max)
 print(length_min, length_max)
