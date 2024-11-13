@@ -98,6 +98,24 @@ ax.legend(loc='upper left', fontsize=16, **legendstyle)
 
 ax.text(-0.15, 1, '(d)', transform=ax.transAxes)
 
+annotation = dict(textcoords='offset points', arrowprops=dict(arrowstyle='->'),
+    ha='center', va='center')
+
+n = np.argmax(nelp == 248)
+ax.annotate('(a)', (xelp[n] * scale, Tcp[n]), (10, 40), **annotation)
+
+n = np.argmax(nelp == 259)
+ax.annotate('(b)', (xelp[n] * scale, Tcp[n]), (-10, -40), **annotation)
+
+n = np.argmax(nelp == 333)
+ax.annotate('(c)', (xelp[n] * scale, Tcp[n]), (-10, -40), **annotation)
+
+n = np.argmax(nelc == 462)
+ax.annotate('(e)', (xelc[n] * scale, Tcp[n]), (10, 40), **annotation)
+
+n = np.argmax(nelp == 462)
+ax.annotate('(f)', (xelp[n] * scale, Tcp[n]), (-10, -40), **annotation)
+
 def load_xyz(xyz):
     with open(xyz) as lines:
         nat = int(next(lines))
