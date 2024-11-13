@@ -6,7 +6,7 @@ import matplotlib.pyplot
 import matplotlib.pyplot as plt
 import storylines
 
-matplotlib.rc('font', size=16)
+matplotlib.rc('font', size=20)
 
 fig, axes = plt.subplots(2, 3, figsize=(21, 12))
 
@@ -55,15 +55,15 @@ for i in range(x.size - 1):
     ax.fill_between([x[i], x[i + 1]], ymin, ymax, color=cmap(normalize(x[i])))
 
 exp = np.loadtxt('exp_dome_1')
-ax.scatter(exp[:, 0], exp[:, 1], fc='none', ec='black', s=100, label='[ref]')
+ax.scatter(exp[:, 0], exp[:, 1], fc='none', ec='black', s=100, label='ref.')
 
 pwi = elphmod.bravais.read_pwi('../dft/MoS2.pwi')
 a = elphmod.bravais.primitives(**pwi)
 vuc = np.linalg.norm(np.cross(a[0], a[1])) * 1e-16
 scale = 1 / (1e14 * vuc)
 
-ax.plot(xels * scale, Tcs, color='teal', label=r'$1 \times 1$ H')
-ax.plot(xelc * scale, Tcc, color='coral', label=r'$2 \times 2$ CDW')
+ax.plot(xels * scale, Tcs, color='teal', label=r'$1 \times 1$')
+ax.plot(xelc * scale, Tcc, color='coral', label=r'$2 \times 2$')
 
 scatter = []
 lines = []
@@ -83,8 +83,10 @@ ax.scatter(xelp[scatter] * scale, Tcp[scatter], c='slategray', s=10)
 ax.set_xlabel('$n$ [$10^{14}\,\mathrm{cm}^{-2}$]')
 ax.set_ylabel('$T_c$ [K]')
 
-ax.tick_params('both', size=6, direction='in', top=True, right=True, which='major')
-ax.tick_params('both', size=4, direction='in', top=True, right=True, which='minor')
+tickstyle = dict(direction='in', top=True, right=True)
+
+ax.tick_params('both', size=6, which='major', **tickstyle)
+ax.tick_params('both', size=4, which='minor', **tickstyle)
 
 ax.set_xlim(x[0], x[-1])
 ax.set_ylim(ymin, ymax)
@@ -94,9 +96,9 @@ ax.set_yscale('log')
 
 legendstyle = dict(frameon=False, handlelength=0.7, ncol=1)
 
-ax.legend(loc='upper left', fontsize=16, **legendstyle)
+ax.legend(loc='upper left', **legendstyle)
 
-ax.text(-0.15, 0.95, '(d)', transform=ax.transAxes)
+ax.text(-0.18, 0.95, '(d)', transform=ax.transAxes)
 
 annotation = dict(textcoords='offset points', arrowprops=dict(arrowstyle='->'),
     ha='center', va='center')
@@ -132,7 +134,8 @@ def load_xyz(xyz):
 
     return a * elphmod.misc.a0, typ, r * elphmod.misc.a0
 
-cmap = plt.get_cmap('Greys_r')
+cmap = matplotlib.colors.LinearSegmentedColormap.from_list('grayscale',
+    list(zip([0.0, 1.0], ['dimgray', 'white'])))
 
 logS_min = +np.inf
 logS_max = -np.inf
@@ -180,19 +183,21 @@ for abc, ax, label in [
 
     q = elphmod.bravais.rotate(q.T, phi, two_dimensional=False).T
 
-    q *= 75
+    q *= 84
 
-    bzpos = (55, 20)
+    bzpos = ((0.5 + 5 / (18 * 6)) * np.linalg.norm(A[0]),
+        6.5 * np.linalg.norm(a[0]))
+
     q[:, :2] += bzpos
 
-    ax.scatter(*bzpos, c='white', s=25000, marker='h', linewidth=0, zorder=5)
+    ax.scatter(*bzpos, c='white', s=27500, marker='h', linewidth=0, zorder=5)
 
-    bz = ax.scatter(q[:, 0], q[:, 1], c=S, s=21, marker='H', linewidth=0,
+    bz = ax.scatter(q[:, 0], q[:, 1], c=S, s=27.5, marker='H', linewidth=0,
         cmap='cubehelix', norm=matplotlib.colors.LogNorm(vmin=1e-15, vmax=1),
         aa=False, zorder=5)
 
     if label == 'polaron248':
-        cb = fig.add_axes(rect=(0.04, 0.6, 0.0075, 0.3))
+        cb = fig.add_axes(rect=(0.045, 0.6, 0.0075, 0.3))
         fig.colorbar(bz, cax=cb)
         cb.yaxis.set_ticks_position('left')
         cb.set_title('$S$')
@@ -248,22 +253,28 @@ for abc, ax, label in [
         xlim=(R[:, 0].min() - pad, R[:, 0].max() + pad),
         ylim=(R[:, 1].min() - pad, R[:, 1].max() + pad))
 
-    scale = 20.0
+    scale = 19.0
 
     arrow = {'->': True}
 
     ok = np.linalg.norm(u[:, :2], axis=1) > 0.035
 
     ax.quiver(*R[ok, :2].T, *scale * u[ok, :2].T, angles='xy', scale_units='xy',
-        scale=1, width=0.005, headwidth=4, headlength=3, headaxislength=3,
+        scale=1, width=0.006, headwidth=3, headlength=2, headaxislength=2,
         zorder=3)
 
-    ax.text(-0.05, 0.95, '(%s)' % abc, transform=ax.transAxes)
+    ax.text(-0.06, 0.94, '(%s)' % abc, transform=ax.transAxes)
 
 print(logS_min, logS_max)
 print(length_min, length_max)
 
 fig.savefig('plot.pdf')
+
+storylines.rasterize('plot', width=3500)
+
+image = np.array(storylines.load('plot.png'))[:, :, :3]
+
+storylines.save('plot.png', image)
 
 fig, ax = plt.subplots(1, 3, figsize=(14, 7), sharey='row',
     width_ratios=(nels.ptp(), nelc.ptp(), nelp.ptp()))
