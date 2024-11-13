@@ -68,6 +68,8 @@ def triangles(distortion=0.02, amplitude=0.1):
 
 symmetric()
 
+driver.to_xyz('symmetric.xyz')
+
 driver.diagonalize()
 mu0 = driver.mu
 
