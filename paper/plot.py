@@ -2,12 +2,13 @@
 
 import elphmod
 import numpy as np
+import os
 import storylines
 
 nel1, xel1, dE1, mu1, u1, lamda1, wlog1, w2nd1, wmin1, Tc1 = np.loadtxt(
     'polaron_new.dat', skiprows=1).T
 
-nel2, xel2, dE2, mu2, u2, lamda2, wlog2, w2nd2, wmin2, Tc2 = np.loadtxt(s
+nel2, xel2, dE2, mu2, u2, lamda2, wlog2, w2nd2, wmin2, Tc2 = np.loadtxt(
     'cdw_new.dat', skiprows=1).T
 
 u_thr = 2e-3
@@ -80,9 +81,11 @@ plot.bottom = 0.4
 plot.node(0, 19, r'$T_{\mathrm c}$ (K)', rotate=90, above=True)
 plot.node(0.68, 0, r'$x$', below='1mm')
 
+os.makedirs('here', exist_ok=True)
+
 for i in range(len(xel1)):
     plot.line(x=xel1[i], zindex=0)
 
-    plot.save('tc_18sqrt3_%03d.pdf' % nel1[i])
+    plot.save('here/%03d.pdf' % nel1[i])
 
     plot.lines.pop(0)
