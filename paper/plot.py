@@ -58,8 +58,8 @@ exp = np.loadtxt('exp_dome_1')
 ax.scatter(exp[:, 0], exp[:, 1], fc='none', ec='black', s=100, label='[ref]')
 
 pwi = elphmod.bravais.read_pwi('../dft/MoS2.pwi')
-a = elphmod.bravais.primitives(**pwi) * 1e-8
-vuc = np.linalg.norm(np.cross(a[0], a[1]))
+a = elphmod.bravais.primitives(**pwi)
+vuc = np.linalg.norm(np.cross(a[0], a[1])) * 1e-16
 scale = 1 / (1e14 * vuc)
 
 ax.plot(xels * scale, Tcs, color='teal', label=r'$1 \times 1$ H')
@@ -110,9 +110,15 @@ def load_xyz(xyz):
             typ.append(col[0])
             r[i] = list(map(float, col[-3:]))
 
-    return a, typ, r
+    return a * elphmod.misc.a0, typ, r * elphmod.misc.a0
 
 cmap = plt.get_cmap('Greys_r')
+
+logS_min = +np.inf
+logS_max = -np.inf
+
+length_min = +np.inf
+length_max = -np.inf
 
 for ax, label in [
         (axes[0, 0], 'polaron248'),
@@ -126,11 +132,54 @@ for ax, label in [
 
     A, typ, R = load_xyz('xyz/%s.xyz' % label)
 
+    phi = -np.arctan2(A[0, 1], A[0, 0])
+
+    b = np.array(elphmod.bravais.reciprocals(*a))
+    B = np.array(elphmod.bravais.reciprocals(*A))
+
+    nq = 100
+
+    q = np.array([q1 * B[0] + q2 * B[1]
+        for q1 in range(-nq, nq + 1)
+        for q2 in range(-nq, nq + 1)])
+
+    maxproj = 0.5 * np.dot(b[0], b[0]) + 1e-8
+
+    q = np.array([qi for qi in q if
+        maxproj >= abs(np.dot(qi, b[0])) and
+        maxproj >= abs(np.dot(qi, b[1])) and
+        maxproj >= abs(np.dot(qi, b[0] - b[1]))])
+
+    # q are the Gamma points of the SC BZ within the UC BZ
+
+    S = abs(np.exp(-2j * np.pi * q.dot(R.T)).sum(axis=-1)) ** 2
+    S /= len(R) ** 2
+
+    logS_min = min(np.log10(S).min(), logS_min)
+    logS_max = max(np.log10(S).max(), logS_max)
+
+    q = elphmod.bravais.rotate(q.T, phi, two_dimensional=False).T
+
+    q *= 75
+
+    bzpos = (55, 20)
+    q[:, :2] += bzpos
+
+    ax.scatter(*bzpos, c='white', s=25000, marker='h', linewidth=0, zorder=5)
+
+    bz = ax.scatter(q[:, 0], q[:, 1], c=S, s=21, marker='H', linewidth=0,
+        cmap='cubehelix', norm=matplotlib.colors.LogNorm(vmin=1e-15, vmax=1),
+        aa=False, zorder=5)
+
+    if label == 'polaron248':
+        cb = fig.add_axes(rect=(0.04, 0.6, 0.0075, 0.3))
+        fig.colorbar(bz, cax=cb)
+        cb.yaxis.set_ticks_position('left')
+        cb.set_title('$S$')
+
     u = R - R0
 
     tau = np.linalg.norm(R0[0, :2] - R0[1, :2])
-
-    sgn = -1 if np.allclose(A[0, 1:], 0.0) else +1
 
     for na in range(len(R)):
         if np.isclose(R0[na] @ A[0],
@@ -138,17 +187,14 @@ for ax, label in [
 
             R0[na] += A[1]
 
-        if R0[na] @ A[0] < sgn * 1e-5:
+        if R0[na] @ A[0] < 1e-5:
             R0[na] += A[0]
 
-        if R0[na] @ A[0] > 0.75 * np.linalg.norm(A[0]) ** 2 - sgn * 1e-5:
+        if R0[na] @ A[0] > 0.75 * np.linalg.norm(A[0]) ** 2 - 1e-5:
             R0[na] -= A[0]
 
-        if sgn > 0:
-            phi = -np.arctan2(A[0, 1], A[0, 0])
-
-            u[na] = elphmod.bravais.rotate(u[na], phi, two_dimensional=False)
-            R0[na] = elphmod.bravais.rotate(R0[na], phi, two_dimensional=False)
+        u[na] = elphmod.bravais.rotate(u[na], phi, two_dimensional=False)
+        R0[na] = elphmod.bravais.rotate(R0[na], phi, two_dimensional=False)
 
     R = R0 + u
 
@@ -157,7 +203,10 @@ for ax, label in [
 
     lengths = np.linalg.norm(bonds[:, 1] - bonds[:, 0], axis=1)
 
-    normalize = matplotlib.colors.Normalize(lengths.min(), lengths.max())
+    length_min = min(lengths.min(), length_min)
+    length_max = max(lengths.max(), length_max)
+
+    normalize = matplotlib.colors.Normalize(1.71356058310615, 2.01285683471413)
 
     for bond, length in zip(bonds, lengths):
         ax.plot(*zip(*bond), linewidth=3, color=cmap(normalize(length)))
@@ -183,11 +232,14 @@ for ax, label in [
 
     arrow = {'->': True}
 
-    ok = np.linalg.norm(u[:, :2], axis=1) > 0.075
+    ok = np.linalg.norm(u[:, :2], axis=1) > 0.035
 
     ax.quiver(*R[ok, :2].T, *scale * u[ok, :2].T, angles='xy', scale_units='xy',
         scale=1, width=0.005, headwidth=4, headlength=3, headaxislength=3,
         zorder=3)
+
+print(logS_min, logS_max)
+print(length_min, length_max)
 
 fig.savefig('plot.pdf')
 
