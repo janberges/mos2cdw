@@ -40,7 +40,7 @@ colors = sum([2 * [c] for c in ['azure', 'lightgray', 'mistyrose']], start=[])
 
 nodes = np.array([0.0, 2.7, 3.0, 3.6, 4.0, 7.8])
 
-x = np.linspace(nodes.min(), nodes.max(), 200)
+x = np.linspace(nodes.min(), nodes.max(), 1000)
 ymin = 1.0
 ymax = 100
 
