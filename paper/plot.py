@@ -62,8 +62,10 @@ a = elphmod.bravais.primitives(**pwi)
 vuc = np.linalg.norm(np.cross(a[0], a[1])) * 1e-16
 scale = 1 / (1e14 * vuc)
 
-ax.plot(xels * scale, Tcs, color='teal', label=r'$1 \times 1$')
-ax.plot(xelc * scale, Tcc, color='coral', label=r'$2 \times 2$')
+linestyle = dict(solid_capstyle='round', linewidth=2.5)
+
+ax.plot(xels * scale, Tcs, color='teal', label=r'$1 \times 1$', **linestyle)
+ax.plot(xelc * scale, Tcc, color='coral', label=r'$2 \times 2$', **linestyle)
 
 scatter = []
 lines = []
@@ -76,9 +78,9 @@ for group in elphmod.misc.group(nelp, 1.1):
 
 for n, line in enumerate(lines):
     ax.plot(xelp[line] * scale, Tcp[line], color='slategray',
-        label=None if n else 'other')
+        label=None if n else 'other', **linestyle)
 
-ax.scatter(xelp[scatter] * scale, Tcp[scatter], c='slategray', s=10)
+ax.scatter(xelp[scatter] * scale, Tcp[scatter], c='slategray', s=20)
 
 ax.set_xlabel('$n$ [$10^{14}\,\mathrm{cm}^{-2}$]')
 ax.set_ylabel('$T_c$ [K]')
