@@ -54,9 +54,6 @@ ax = axes[1, 0]
 for i in range(x.size - 1):
     ax.fill_between([x[i], x[i + 1]], ymin, ymax, color=cmap(normalize(x[i])))
 
-exp = np.loadtxt('exp_dome_1')
-ax.scatter(exp[:, 0], exp[:, 1], fc='none', ec='black', s=100, label='ref.')
-
 pwi = elphmod.bravais.read_pwi('../dft/MoS2.pwi')
 a = elphmod.bravais.primitives(**pwi)
 vuc = np.linalg.norm(np.cross(a[0], a[1])) * 1e-16
@@ -64,8 +61,8 @@ scale = 1 / (1e14 * vuc)
 
 linestyle = dict(solid_capstyle='round', linewidth=2.5)
 
-ax.plot(xels * scale, Tcs, color='teal', label=r'$1 \times 1$', **linestyle)
-ax.plot(xelc * scale, Tcc, color='coral', label=r'$2 \times 2$', **linestyle)
+ax.plot(xels * scale, Tcs, color='teal', label=r'$1 \times 1$ H', **linestyle)
+ax.plot(xelc * scale, Tcc, color='coral', label=r'$2 \times 2$ CDW', **linestyle)
 
 scatter = []
 lines = []
@@ -81,6 +78,9 @@ for n, line in enumerate(lines):
         label=None if n else 'other', **linestyle)
 
 ax.scatter(xelp[scatter] * scale, Tcp[scatter], c='slategray', s=20)
+
+exp = np.loadtxt('exp_dome_1')
+ax.scatter(exp[:, 0], exp[:, 1], fc='none', ec='black', s=100, label='ref.')
 
 ax.set_xlabel('$n$ [$10^{14}\,\mathrm{cm}^{-2}$]')
 ax.set_ylabel('$T_c$ [K]')
