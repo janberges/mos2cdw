@@ -255,13 +255,11 @@ for abc, ax, label in [
         xlim=(R[:, 0].min() - pad, R[:, 0].max() + pad),
         ylim=(R[:, 1].min() - pad, R[:, 1].max() + pad))
 
-    scale = 19.0
-
     arrow = {'->': True}
 
     ok = np.linalg.norm(u[:, :2], axis=1) > 0.035
 
-    ax.quiver(*R[ok, :2].T, *scale * u[ok, :2].T, angles='xy', scale_units='xy',
+    ax.quiver(*R[ok, :2].T, *19 * u[ok, :2].T, angles='xy', scale_units='xy',
         scale=1, width=0.006, headwidth=3, headlength=2, headaxislength=2,
         zorder=3)
 
