@@ -288,7 +288,7 @@ ax[0].plot(xels * scale, lamdas, color=colors[1], label=r'$\lambda$')
 ax[0].plot(xels * scale, wlogs * 1e3, color=colors[2],
     label=r'$\omega_{\mathrm{log}}$ [meV]')
 ax[0].plot(xels * scale, w2nds * 1e3, color=colors[3],
-    label=r'$\omega_{\mathrm{2nd}}$ [meV]')
+    label=r'$\overline{\omega}_2$ [meV]')
 ax[0].plot(xels * scale, -dEs * 1e3, color=colors[4], label=r'$\Delta E$ [meV]')
 ax[0].plot(xels * scale, us * 1e2, color=colors[5], label=r'$|u|$ [pm]')
 
