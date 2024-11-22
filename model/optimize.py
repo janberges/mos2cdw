@@ -27,7 +27,7 @@ def error(t):
     return error
 
 t = scipy.optimize.minimize(error,
-    [0.31479, -0.54522, 0.21612, 0.33978, -0.13760, -0.05757]).x
+    [-0.31479, 0.54522, -0.21612, -0.33978, 0.13760, 0.05757]).x
 
 coupling = model.setup_coupling(*t)
 

@@ -69,12 +69,12 @@ def setup_coupling(
         K2 = k2 + q2
 
         return (
-            + dt[0] * (np.exp(1j * k1) - np.exp(1j * K1))
-            + dt[3] * (np.exp(-1j * k1) - np.exp(-1j * K1))
-            + dt[1] * (np.exp(1j * (k1 + k2)) - np.exp(1j * (K1 + K2)))
-            + dt[4] * (np.exp(-1j * (k1 + k2)) - np.exp(-1j * (K1 + K2)))
-            + dt[2] * (np.exp(1j * k2) - np.exp(1j * K2))
-            + dt[5] * (np.exp(-1j * k2) - np.exp(-1j * K2))
+            + dt[0] * (np.exp(1j * K1) - np.exp(1j * k1))
+            + dt[3] * (np.exp(-1j * K1) - np.exp(-1j * k1))
+            + dt[1] * (np.exp(1j * (K1 + K2)) - np.exp(1j * (k1 + k2)))
+            + dt[4] * (np.exp(-1j * (K1 + K2)) - np.exp(-1j * (k1 + k2)))
+            + dt[2] * (np.exp(1j * K2) - np.exp(1j * k2))
+            + dt[5] * (np.exp(-1j * K2) - np.exp(-1j * k2))
             ) / sqrtM
 
     return coupling
