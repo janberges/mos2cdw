@@ -6,9 +6,9 @@ import elphmod
 def setup_coupling(
     t_z2=-0.14,
     t_z2_x2y2=0.48,
-    t_z2_xy=0.38,
+    t_z2_xy=-0.38,
     t_x2y2=-0.26,
-    t_x2y2_xy=-0.31,
+    t_x2y2_xy=0.31,
     t_xy=0.32,
 
     a=3.185,
