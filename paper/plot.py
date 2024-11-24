@@ -82,8 +82,8 @@ ax.scatter(xelp[scatter] * scale, Tcp[scatter], c='slategray', s=20)
 exp = np.loadtxt('exp_dome_1')
 ax.scatter(exp[:, 0], exp[:, 1], fc='none', ec='black', s=100, label='ref.')
 
-ax.set_xlabel('$n$ [$10^{14}\,\mathrm{cm}^{-2}$]')
-ax.set_ylabel('$T_c$ [K]')
+ax.set_xlabel('$n$ ($10^{14}\,\mathrm{cm}^{-2}$)')
+ax.set_ylabel('$T_c$ (K)')
 
 tickstyle = dict(direction='in', top=True, right=True)
 
@@ -283,14 +283,14 @@ fig.subplots_adjust(0.20, 0.12, 0.97, 0.94, wspace=0.05)
 
 colors = ['black', 'teal', 'gray', 'lightgray', 'tomato', 'chocolate']
 
-ax[0].plot(xels * scale, Tcs, color=colors[0], label=r'$T_{\mathrm{c}}$ [K]')
+ax[0].plot(xels * scale, Tcs, color=colors[0], label=r'$T_{\mathrm{c}}$ (K)')
 ax[0].plot(xels * scale, lamdas, color=colors[1], label=r'$\lambda$')
 ax[0].plot(xels * scale, wlogs * 1e3, color=colors[2],
-    label=r'$\omega_{\mathrm{log}}$ [meV]')
+    label=r'$\omega_{\mathrm{log}}$ (meV)')
 ax[0].plot(xels * scale, w2nds * 1e3, color=colors[3],
-    label=r'$\overline{\omega}_2$ [meV]')
-ax[0].plot(xels * scale, -dEs * 1e3, color=colors[4], label=r'$\Delta E$ [meV]')
-ax[0].plot(xels * scale, us * 1e2, color=colors[5], label=r'$|u|$ [pm]')
+    label=r'$\overline{\omega}_2$ (meV)')
+ax[0].plot(xels * scale, -dEs * 1e3, color=colors[4], label=r'$\Delta E$ (meV)')
+ax[0].plot(xels * scale, us * 1e2, color=colors[5], label=r'$|u|$ (pm)')
 
 ax[0].set_title(r'$1 \times 1$ H')
 ax[0].set_xlim(xels.min() * scale, xels.max() * scale)
@@ -305,7 +305,7 @@ ax[1].plot(xelc * scale, uc * 1e2, color=colors[5])
 
 ax[1].set_title(r'$2 \times 2$ CDW')
 ax[1].set_xlim(xelc.min() * scale, xelc.max() * scale)
-ax[1].set_xlabel('$n$ [$10^{14}\,\mathrm{cm}^{-2}$]')
+ax[1].set_xlabel('$n$ ($10^{14}\,\mathrm{cm}^{-2}$)')
 
 for line in lines:
     ax[2].plot(xelp[line] * scale, Tcp[line], color=colors[0])
