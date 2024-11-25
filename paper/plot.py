@@ -259,9 +259,9 @@ for abc, ax, label in [
 
     ok = np.linalg.norm(u[:, :2], axis=1) > 0.035
 
-    ax.quiver(*R[ok, :2].T, *15 * u[ok, :2].T, angles='xy', scale_units='xy',
-        scale=1, width=0.005, headwidth=3, headlength=2, headaxislength=2,
-        zorder=3)
+    ax.quiver(*R[ok, :2].T, *20 * u[ok, :2].T, angles='xy', scale_units='xy',
+        scale=1, width=0.006, headwidth=3, headlength=2, headaxislength=2,
+        zorder=3, clip_on=False)
 
     ax.text(-0.06, 0.94, '(%s)' % abc, transform=ax.transAxes)
 
