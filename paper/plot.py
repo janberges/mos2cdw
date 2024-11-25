@@ -80,7 +80,7 @@ for n, line in enumerate(lines):
 ax.scatter(xelp[scatter] * scale, Tcp[scatter], c='slategray', s=20)
 
 exp = np.loadtxt('exp_dome_1')
-ax.scatter(exp[:, 0], exp[:, 1], fc='none', ec='black', s=100, label='ref.')
+ax.scatter(exp[:, 0], exp[:, 1], fc='none', ec='black', s=100, label='exp.')
 
 ax.set_xlabel('$n$ ($10^{14}\,\mathrm{cm}^{-2}$)')
 ax.set_ylabel('$T_c$ (K)')
