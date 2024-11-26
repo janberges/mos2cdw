@@ -13,10 +13,10 @@ fig, axes = plt.subplots(2, 3, figsize=(21, 12))
 fig.subplots_adjust(0.06, 0.06, 1.0, 0.98, wspace=0.1, hspace=0.05)
 
 nel1, xel1, dE1, mu1, u1, lamda1, wlog1, w2nd1, wmin1, Tc1 = np.loadtxt(
-    'polaron_new.dat', skiprows=1).T
+    'polaron.dat', skiprows=1).T
 
 nel2, xel2, dE2, mu2, u2, lamda2, wlog2, w2nd2, wmin2, Tc2 = np.loadtxt(
-    'cdw_new.dat', skiprows=1).T
+    'cdw.dat', skiprows=1).T
 
 u_thr = 2e-3
 
