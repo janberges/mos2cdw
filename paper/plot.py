@@ -153,9 +153,9 @@ for abc, ax, label in [
         ('f', axes[1, 2], 'polaron462'),
         ]:
 
-    A, typ, R0 = load_xyz('symmetric.xyz')
+    A, typ, R0 = load_xyz('xyz/symmetric.xyz')
 
-    A, typ, R = load_xyz('%s.xyz' % label)
+    A, typ, R = load_xyz('xyz/%s.xyz' % label)
 
     phi = -np.arctan2(A[0, 1], A[0, 0])
 

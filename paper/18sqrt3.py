@@ -68,7 +68,7 @@ def triangles(distortion=0.02, amplitude=0.1):
 
 symmetric()
 
-driver.to_xyz('symmetric.xyz')
+driver.to_xyz('xyz/symmetric.xyz')
 
 driver.diagonalize()
 mu0 = driver.mu
@@ -84,7 +84,7 @@ elif 'polaron' in ini:
 scipy.optimize.minimize(driver.free_energy, driver.u, jac=driver.jacobian,
     method='BFGS', options=dict(gtol=1e-5, norm=np.inf))
 
-driver.to_xyz('%s%03d.xyz' % (ini, nel))
+driver.to_xyz('xyz/%s%03d.xyz' % (ini, nel))
 
 E = driver.free_energy()
 
