@@ -2,7 +2,6 @@
 
 import elphmod
 import numpy as np
-import storylines
 import sys
 import matplotlib.pyplot as plt
 
