@@ -12,7 +12,5 @@ MoS2_3*
 __pycache__
 mos2*
 relax_small.xyz
-relax_supercell/*.xyz
 slurm-*.out
-!relax_supercell.tex
 !phase_diagram.tex
