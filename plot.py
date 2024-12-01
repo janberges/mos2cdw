@@ -289,8 +289,8 @@ ax[0].plot(xels * scale, wlogs * 1e3, color=colors[2],
     label=r'$\omega_{\mathrm{log}}$ (meV)')
 ax[0].plot(xels * scale, w2nds * 1e3, color=colors[3],
     label=r'$\overline{\omega}_2$ (meV)')
-ax[0].plot(xels * scale, N0s * 1e1, color=colors[4],
-    label=r'$10 N(\varepsilon_F)$ (1/eV)')
+ax[0].plot(xels * scale, N0s * elphmod.misc.Ry, color=colors[4],
+    label=r'$N(\varepsilon_F)$ (1/Ry)')
 ax[0].plot(xels * scale, -dEs * 1e3, color=colors[5], label=r'$\Delta E$ (meV)')
 ax[0].plot(xels * scale, us * 1e2, color=colors[6], label=r'$|u|$ (pm)')
 
@@ -302,7 +302,7 @@ ax[1].plot(xelc * scale, Tcc, color=colors[0])
 ax[1].plot(xelc * scale, lamdac, color=colors[1])
 ax[1].plot(xelc * scale, wlogc * 1e3, color=colors[2])
 ax[1].plot(xelc * scale, w2ndc * 1e3, color=colors[3])
-ax[1].plot(xelc * scale, N0c * 1e1, color=colors[4])
+ax[1].plot(xelc * scale, N0c * elphmod.misc.Ry, color=colors[4])
 ax[1].plot(xelc * scale, -dEc * 1e3, color=colors[5])
 ax[1].plot(xelc * scale, uc * 1e2, color=colors[6])
 
@@ -315,7 +315,7 @@ for line in lines:
     ax[2].plot(xelp[line] * scale, lamdap[line], color=colors[1])
     ax[2].plot(xelp[line] * scale, wlogp[line] * 1e3, color=colors[2])
     ax[2].plot(xelp[line] * scale, w2ndp[line] * 1e3, color=colors[3])
-    ax[2].plot(xelp[line] * scale, N0p[line] * 1e1, color=colors[4])
+    ax[2].plot(xelp[line] * scale, N0p[line] * elphmod.misc.Ry, color=colors[4])
     ax[2].plot(xelp[line] * scale, -dEp[line] * 1e3, color=colors[5])
     ax[2].plot(xelp[line] * scale, up[line] * 1e2, color=colors[6])
 
@@ -323,7 +323,8 @@ ax[2].scatter(xelp[scatter] * scale, Tcp[scatter], c=colors[0], s=10)
 ax[2].scatter(xelp[scatter] * scale, lamdap[scatter], c=colors[1], s=10)
 ax[2].scatter(xelp[scatter] * scale, wlogp[scatter] * 1e3, c=colors[2], s=10)
 ax[2].scatter(xelp[scatter] * scale, w2ndp[scatter] * 1e3, c=colors[3], s=10)
-ax[2].scatter(xelp[scatter] * scale, N0p[scatter] * 1e1, c=colors[4], s=10)
+ax[2].scatter(xelp[scatter] * scale, N0p[scatter] * elphmod.misc.Ry,
+    c=colors[4], s=10)
 ax[2].scatter(xelp[scatter] * scale, -dEp[scatter] * 1e3, c=colors[5], s=10)
 ax[2].scatter(xelp[scatter] * scale, up[scatter] * 1e2, c=colors[6], s=10)
 
