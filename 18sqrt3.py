@@ -87,6 +87,8 @@ driver.to_xyz('xyz/%s%03d.xyz' % (ini, nel))
 
 E = driver.free_energy()
 
+N0 = driver.f.delta(driver.e / driver.kT).sum() / driver.kT
+
 lamda, wlog, w2nd, wmin = driver.superconductivity()
 
 wlog *= elphmod.misc.Ry
@@ -99,12 +101,13 @@ info('The critical temperature is %g K.' % Tc)
 
 if comm.rank == 0:
     with open('%s%03d.dat' % (ini, nel), 'w') as data:
-        data.write(('%3s' + ' %9s' * 9 + '\n') % ('nel', 'xel',
-            'dE/eV', 'mu/eV', '|u|/AA',
+        data.write(('%3s' + ' %9s' * 10 + '\n') % ('nel', 'xel',
+            'dE/eV', 'N0*eV', 'mu/eV', '|u|/AA',
             'lamda', 'wlog/eV', 'w2nd/eV', 'wmin/eV', 'Tc/K'))
 
-        data.write(('%3d' + ' %9.6f' * 9 + '\n') % (nel, nel / cells,
+        data.write(('%3d' + ' %9.6f' * 10 + '\n') % (nel, nel / cells,
             (E - E0) * elphmod.misc.Ry / cells,
+            N0 / elphmod.misc.Ry / cells,
             (driver.mu - mu0) * elphmod.misc.Ry,
             np.linalg.norm(driver.u) * elphmod.misc.a0 / np.sqrt(cells),
             lamda, wlog, w2nd, wmin, Tc))
