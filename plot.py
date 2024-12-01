@@ -8,9 +8,12 @@ import storylines
 
 matplotlib.rc('font', size=20)
 
-fig, axes = plt.subplots(2, 3, figsize=(21, 12))
+legendstyle = dict(frameon=False, handlelength=0.7, ncol=1)
 
-fig.subplots_adjust(0.06, 0.06, 1.0, 0.98, wspace=0.1, hspace=0.05)
+pwi = elphmod.bravais.read_pwi('../dft/MoS2.pwi')
+a = elphmod.bravais.primitives(**pwi)
+vuc = np.linalg.norm(np.cross(a[0], a[1])) * 1e-16
+scale = 1 / (1e14 * vuc)
 
 nel1, xel1, dE1, N01, mu1, u1, lamda1, wlog1, w2nd1, wmin1, Tc1 = np.loadtxt(
     'polaron.dat', skiprows=1).T
@@ -36,6 +39,19 @@ cdw = (wmin2 >= 0) & (u2 >= u_thr)
     xel2[cdw], dE2[cdw], N02[cdw], mu2[cdw], u2[cdw], lamda2[cdw], wlog2[cdw],
     w2nd2[cdw], wmin2[cdw], Tc2[cdw])
 
+scatter = []
+lines = []
+
+for group in elphmod.misc.group(nelp, 1.1):
+    if len(group) == 1:
+        scatter.extend(group)
+    else:
+        lines.append(group)
+
+fig, axes = plt.subplots(2, 3, figsize=(21, 12))
+
+fig.subplots_adjust(0.06, 0.06, 1.0, 0.98, wspace=0.1, hspace=0.05)
+
 colors = sum([2 * [c] for c in ['azure', 'lightgray', 'mistyrose']], start=[])
 
 nodes = np.array([0.0, 2.7, 3.0, 3.6, 4.0, 7.8])
@@ -54,24 +70,10 @@ ax = axes[1, 0]
 for i in range(x.size - 1):
     ax.fill_between([x[i], x[i + 1]], ymin, ymax, color=cmap(normalize(x[i])))
 
-pwi = elphmod.bravais.read_pwi('../dft/MoS2.pwi')
-a = elphmod.bravais.primitives(**pwi)
-vuc = np.linalg.norm(np.cross(a[0], a[1])) * 1e-16
-scale = 1 / (1e14 * vuc)
-
 linestyle = dict(solid_capstyle='round', linewidth=2.5)
 
 ax.plot(xels * scale, Tcs, color='teal', label=r'$1 \times 1$ H', **linestyle)
 ax.plot(xelc * scale, Tcc, color='coral', label=r'$2 \times 2$ CDW', **linestyle)
-
-scatter = []
-lines = []
-
-for group in elphmod.misc.group(nelp, 1.1):
-    if len(group) == 1:
-        scatter.extend(group)
-    else:
-        lines.append(group)
 
 for n, line in enumerate(lines):
     ax.plot(xelp[line] * scale, Tcp[line], color='slategray',
@@ -95,8 +97,6 @@ ax.set_ylim(ymin, ymax)
 ax.xaxis.set_major_locator(matplotlib.ticker.MultipleLocator(base=1.0))
 
 ax.set_yscale('log')
-
-legendstyle = dict(frameon=False, handlelength=0.7, ncol=1)
 
 ax.legend(loc='upper left', **legendstyle)
 
