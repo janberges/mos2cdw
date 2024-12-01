@@ -13,12 +13,11 @@ ini = str(sys.argv[2]) if len(sys.argv) > 2 else 'cdw'
 
 mustar = 0.13
 
-pw = elphmod.bravais.read_pwi('../dft/MoS2.pwi')
+pw = elphmod.bravais.read_pwi('dft/MoS2.pwi')
 
-el = elphmod.el.Model('../dft/MoS2_3', rydberg=True)
-ph = elphmod.ph.Model('../dft/MoS2.ifc', divide_mass=False,
-    apply_asr_simple=True)
-elph = elphmod.elph.Model('../model/model.epmatwp', '../model/model.wigner',
+el = elphmod.el.Model('dft/MoS2_3', rydberg=True)
+ph = elphmod.ph.Model('dft/MoS2.ifc', divide_mass=False, apply_asr_simple=True)
+elph = elphmod.elph.Model('model/model.epmatwp', 'model/model.wigner',
     el, ph, divide_mass=False, shared_memory=True)
 
 driver = elphmod.md.Driver(elph,
