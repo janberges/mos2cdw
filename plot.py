@@ -12,10 +12,10 @@ fig, axes = plt.subplots(2, 3, figsize=(21, 12))
 
 fig.subplots_adjust(0.06, 0.06, 1.0, 0.98, wspace=0.1, hspace=0.05)
 
-nel1, xel1, dE1, mu1, u1, lamda1, wlog1, w2nd1, wmin1, Tc1 = np.loadtxt(
+nel1, xel1, dE1, N01, mu1, u1, lamda1, wlog1, w2nd1, wmin1, Tc1 = np.loadtxt(
     'polaron.dat', skiprows=1).T
 
-nel2, xel2, dE2, mu2, u2, lamda2, wlog2, w2nd2, wmin2, Tc2 = np.loadtxt(
+nel2, xel2, dE2, N02, mu2, u2, lamda2, wlog2, w2nd2, wmin2, Tc2 = np.loadtxt(
     'cdw.dat', skiprows=1).T
 
 u_thr = 2e-3
@@ -24,17 +24,17 @@ pol = (wmin1 >= 0) & (u1 >= u_thr)
 sym = (wmin1 >= 0) & (abs(u1) < u_thr)
 cdw = (wmin2 >= 0) & (u2 >= u_thr)
 
-(nels, xels, dEs, mus, us, lamdas, wlogs, w2nds, wmins, Tcs) = (nel1[sym],
-    xel1[sym], dE1[sym], mu1[sym], u1[sym], lamda1[sym], wlog1[sym], w2nd1[sym],
-    wmin1[sym], Tc1[sym])
+(nels, xels, dEs, N0s, mus, us, lamdas, wlogs, w2nds, wmins, Tcs) = (nel1[sym],
+    xel1[sym], dE1[sym], N01[sym], mu1[sym], u1[sym], lamda1[sym], wlog1[sym],
+    w2nd1[sym], wmin1[sym], Tc1[sym])
 
-(nelp, xelp, dEp, mup, up, lamdap, wlogp, w2ndp, wminp, Tcp) = (nel1[pol],
-    xel1[pol], dE1[pol], mu1[pol], u1[pol], lamda1[pol], wlog1[pol], w2nd1[pol],
-    wmin1[pol], Tc1[pol])
+(nelp, xelp, dEp, N0p, mup, up, lamdap, wlogp, w2ndp, wminp, Tcp) = (nel1[pol],
+    xel1[pol], dE1[pol], N01[pol], mu1[pol], u1[pol], lamda1[pol], wlog1[pol],
+    w2nd1[pol], wmin1[pol], Tc1[pol])
 
-(nelc, xelc, dEc, muc, uc, lamdac, wlogc, w2ndc, wminc, Tcc) = (nel2[cdw],
-    xel2[cdw], dE2[cdw], mu2[cdw], u2[cdw], lamda2[cdw], wlog2[cdw], w2nd2[cdw],
-    wmin2[cdw], Tc2[cdw])
+(nelc, xelc, dEc, N0c, muc, uc, lamdac, wlogc, w2ndc, wminc, Tcc) = (nel2[cdw],
+    xel2[cdw], dE2[cdw], N02[cdw], mu2[cdw], u2[cdw], lamda2[cdw], wlog2[cdw],
+    w2nd2[cdw], wmin2[cdw], Tc2[cdw])
 
 colors = sum([2 * [c] for c in ['azure', 'lightgray', 'mistyrose']], start=[])
 
@@ -281,7 +281,7 @@ fig, ax = plt.subplots(1, 3, figsize=(14, 7), sharey='row',
 
 fig.subplots_adjust(0.20, 0.12, 0.97, 0.94, wspace=0.05)
 
-colors = ['black', 'teal', 'gray', 'lightgray', 'tomato', 'chocolate']
+colors = ['black', 'teal', 'gray', 'lightgray', 'orange', 'tomato', 'chocolate']
 
 ax[0].plot(xels * scale, Tcs, color=colors[0], label=r'$T_{\mathrm{c}}$ (K)')
 ax[0].plot(xels * scale, lamdas, color=colors[1], label=r'$\lambda$')
@@ -289,8 +289,10 @@ ax[0].plot(xels * scale, wlogs * 1e3, color=colors[2],
     label=r'$\omega_{\mathrm{log}}$ (meV)')
 ax[0].plot(xels * scale, w2nds * 1e3, color=colors[3],
     label=r'$\overline{\omega}_2$ (meV)')
-ax[0].plot(xels * scale, -dEs * 1e3, color=colors[4], label=r'$\Delta E$ (meV)')
-ax[0].plot(xels * scale, us * 1e2, color=colors[5], label=r'$|u|$ (pm)')
+ax[0].plot(xels * scale, N0s * 1e1, color=colors[4],
+    label=r'$10 N(\varepsilon_F)$ (1/eV)')
+ax[0].plot(xels * scale, -dEs * 1e3, color=colors[5], label=r'$\Delta E$ (meV)')
+ax[0].plot(xels * scale, us * 1e2, color=colors[6], label=r'$|u|$ (pm)')
 
 ax[0].set_title(r'$1 \times 1$ H')
 ax[0].set_xlim(xels.min() * scale, xels.max() * scale)
@@ -300,8 +302,9 @@ ax[1].plot(xelc * scale, Tcc, color=colors[0])
 ax[1].plot(xelc * scale, lamdac, color=colors[1])
 ax[1].plot(xelc * scale, wlogc * 1e3, color=colors[2])
 ax[1].plot(xelc * scale, w2ndc * 1e3, color=colors[3])
-ax[1].plot(xelc * scale, -dEc * 1e3, color=colors[4])
-ax[1].plot(xelc * scale, uc * 1e2, color=colors[5])
+ax[1].plot(xelc * scale, N0c * 1e1, color=colors[4])
+ax[1].plot(xelc * scale, -dEc * 1e3, color=colors[5])
+ax[1].plot(xelc * scale, uc * 1e2, color=colors[6])
 
 ax[1].set_title(r'$2 \times 2$ CDW')
 ax[1].set_xlim(xelc.min() * scale, xelc.max() * scale)
@@ -312,15 +315,17 @@ for line in lines:
     ax[2].plot(xelp[line] * scale, lamdap[line], color=colors[1])
     ax[2].plot(xelp[line] * scale, wlogp[line] * 1e3, color=colors[2])
     ax[2].plot(xelp[line] * scale, w2ndp[line] * 1e3, color=colors[3])
-    ax[2].plot(xelp[line] * scale, -dEp[line] * 1e3, color=colors[4])
-    ax[2].plot(xelp[line] * scale, up[line] * 1e2, color=colors[5])
+    ax[2].plot(xelp[line] * scale, N0p[line] * 1e1, color=colors[4])
+    ax[2].plot(xelp[line] * scale, -dEp[line] * 1e3, color=colors[5])
+    ax[2].plot(xelp[line] * scale, up[line] * 1e2, color=colors[6])
 
 ax[2].scatter(xelp[scatter] * scale, Tcp[scatter], c=colors[0], s=10)
 ax[2].scatter(xelp[scatter] * scale, lamdap[scatter], c=colors[1], s=10)
 ax[2].scatter(xelp[scatter] * scale, wlogp[scatter] * 1e3, c=colors[2], s=10)
 ax[2].scatter(xelp[scatter] * scale, w2ndp[scatter] * 1e3, c=colors[3], s=10)
-ax[2].scatter(xelp[scatter] * scale, -dEp[scatter] * 1e3, c=colors[4], s=10)
-ax[2].scatter(xelp[scatter] * scale, up[scatter] * 1e2, c=colors[5], s=10)
+ax[2].scatter(xelp[scatter] * scale, N0p[scatter] * 1e1, c=colors[4], s=10)
+ax[2].scatter(xelp[scatter] * scale, -dEp[scatter] * 1e3, c=colors[5], s=10)
+ax[2].scatter(xelp[scatter] * scale, up[scatter] * 1e2, c=colors[6], s=10)
 
 ax[2].set_title('other')
 ax[2].set_xlim(xelp.min() * scale, xelp.max() * scale)
