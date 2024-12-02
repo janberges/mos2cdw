@@ -20,10 +20,10 @@ q = np.array([[0.0, np.pi]])
 
 BZ = dict(points=100, outside=np.nan)
 
-el = elphmod.el.Model('../data/MoS2_3')
-ph = elphmod.ph.Model('../data/MoS2.ifc', apply_asr_simple=True)
-elph = elphmod.elph.Model('../data/MoS2_3.epmatwp', '../data/MoS2_3.wigner', el, ph)
-model = elphmod.elph.Model('../data/model.epmatwp', '../data/model.wigner', el, ph)
+el = elphmod.el.Model('data/MoS2_3')
+ph = elphmod.ph.Model('data/MoS2.ifc', apply_asr_simple=True)
+elph = elphmod.elph.Model('data/MoS2_3.epmatwp', 'data/MoS2_3.wigner', el, ph)
+model = elphmod.elph.Model('data/model.epmatwp', 'data/model.wigner', el, ph)
 
 w2, u = elphmod.dispersion.dispersion(ph.D, q, vectors=True)
 
@@ -32,7 +32,7 @@ g2 = model.sample(q, (nk, nk), u=u[..., 1:2], squared=True)
 
 g2max = max(g02.max(), g2.max())
 
-for name, coupling in ('coupling_mod', g2), ('coupling_ref', g02):
+for name, coupling in ('model_plot_mod', g2), ('model_plot_ref', g02):
     for a in range(el.size):
         for b in range(el.size):
             data = elphmod.plot.toBZ(coupling[0, 0, :, :, a, b], **BZ)

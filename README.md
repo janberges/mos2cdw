@@ -19,9 +19,8 @@ model (which also contains `dxz` and `dyz` orbitals):
 To further reduce the cost, we map the coupling to a nearest-neighbor model, as
 described in Appendix B of Phys. Rev B 101, 155107 (2020):
 
-    cd model
-    python3 optimize.py
-    python3 plot.py
+    python3 model_optimize.py
+    python3 model_plot.py
 
 Now we are ready to relax the structure on different supercells, employing the
 “model III” presented in SciPost Phys. 16, 046 (2024):

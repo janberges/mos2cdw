@@ -9,9 +9,9 @@ nk = 48
 
 q = np.array([[0.0, 0.0], [0.0, np.pi], [2 * np.pi / 3, 2 * np.pi / 3]])
 
-el = elphmod.el.Model('../data/MoS2_3')
-ph = elphmod.ph.Model('../data/MoS2.ifc', apply_asr_simple=True)
-elph = elphmod.elph.Model('../data/MoS2_3.epmatwp', '../data/MoS2_3.wigner', el, ph)
+el = elphmod.el.Model('data/MoS2_3')
+ph = elphmod.ph.Model('data/MoS2.ifc', apply_asr_simple=True)
+elph = elphmod.elph.Model('data/MoS2_3.epmatwp', 'data/MoS2_3.wigner', el, ph)
 
 g0 = elph.sample(q, (nk, nk))
 
@@ -31,4 +31,4 @@ t = scipy.optimize.minimize(error,
 
 coupling = model.setup_coupling(*t)
 
-model.save_coupling('model', coupling, el, ph)
+model.save_coupling('data/model', coupling, el, ph)
