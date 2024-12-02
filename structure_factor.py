@@ -10,7 +10,7 @@ xyz = sys.argv[1]
 comm = elphmod.MPI.comm
 info = elphmod.MPI.info
 
-pw = elphmod.bravais.read_pwi('dft/MoS2.pwi')
+pw = elphmod.bravais.read_pwi('data/MoS2.pwi')
 
 a = elphmod.bravais.primitives(**pw, bohr=True)
 b = np.array(elphmod.bravais.reciprocals(*a))
@@ -27,9 +27,9 @@ comm.Bcast(N)
 
 info('Plotting %s x %s x %s supercell' % tuple(map(tuple, N)))
 
-el = elphmod.el.Model('dft/MoS2_3', rydberg=True)
-ph = elphmod.ph.Model('dft/MoS2.ifc', divide_mass=False, apply_asr_simple=True)
-elph = elphmod.elph.Model('model/model.epmatwp', 'model/model.wigner', el, ph,
+el = elphmod.el.Model('data/MoS2_3', rydberg=True)
+ph = elphmod.ph.Model('data/MoS2.ifc', divide_mass=False, apply_asr_simple=True)
+elph = elphmod.elph.Model('data/model.epmatwp', 'data/model.wigner', el, ph,
     divide_mass=False, shared_memory=True)
 
 elph.clear()

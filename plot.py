@@ -10,7 +10,7 @@ matplotlib.rc('font', size=20)
 
 legendstyle = dict(frameon=False, handlelength=0.7, ncol=1)
 
-pwi = elphmod.bravais.read_pwi('dft/MoS2.pwi')
+pwi = elphmod.bravais.read_pwi('data/MoS2.pwi')
 a = elphmod.bravais.primitives(**pwi)
 vuc = np.linalg.norm(np.cross(a[0], a[1])) * 1e-16
 scale = 1 / (1e14 * vuc)

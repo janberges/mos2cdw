@@ -8,11 +8,11 @@ import scipy.optimize
 unfold = False
 linewidth = 0.5
 
-pw = elphmod.bravais.read_pwi('dft/MoS2.pwi')
+pw = elphmod.bravais.read_pwi('data/MoS2.pwi')
 
-el = elphmod.el.Model('dft/MoS2_3', rydberg=True)
-ph = elphmod.ph.Model('dft/MoS2.ifc', divide_mass=False, apply_asr_simple=True)
-elph = elphmod.elph.Model('model/model.epmatwp', 'model/model.wigner', el, ph,
+el = elphmod.el.Model('data/MoS2_3', rydberg=True)
+ph = elphmod.ph.Model('data/MoS2.ifc', divide_mass=False, apply_asr_simple=True)
+elph = elphmod.elph.Model('data/model.epmatwp', 'data/model.wigner', el, ph,
     divide_mass=False, shared_memory=True)
 
 elph = elph.supercell(2, 2, shared_memory=True)
@@ -49,7 +49,7 @@ path = 'GMKG'
 q, x, corners = elphmod.bravais.path(path, ibrav=4, N=150)
 
 if unfold:
-    ph = elphmod.ph.Model('dft/MoS2.ifc', apply_asr_simple=True)
+    ph = elphmod.ph.Model('data/MoS2.ifc', apply_asr_simple=True)
 
     Q = np.dot(np.dot(q, elphmod.bravais.reciprocals(*ph.a)), Ph.a.T)
 

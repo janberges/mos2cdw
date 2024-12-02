@@ -20,10 +20,10 @@ q = np.array([[0.0, np.pi]])
 
 BZ = dict(points=100, outside=np.nan)
 
-el = elphmod.el.Model('../dft/MoS2_3')
-ph = elphmod.ph.Model('../dft/MoS2.ifc', apply_asr_simple=True)
-elph = elphmod.elph.Model('../dft/MoS2_3.epmatwp', '../dft/MoS2_3.wigner', el, ph)
-model = elphmod.elph.Model('model.epmatwp', 'model.wigner', el, ph)
+el = elphmod.el.Model('../data/MoS2_3')
+ph = elphmod.ph.Model('../data/MoS2.ifc', apply_asr_simple=True)
+elph = elphmod.elph.Model('../data/MoS2_3.epmatwp', '../data/MoS2_3.wigner', el, ph)
+model = elphmod.elph.Model('../data/model.epmatwp', '../data/model.wigner', el, ph)
 
 w2, u = elphmod.dispersion.dispersion(ph.D, q, vectors=True)
 

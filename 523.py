@@ -2,9 +2,9 @@
 
 import elphmod
 
-el = elphmod.el.Model('dft/MoS2')
-ph = elphmod.ph.Model('dft/MoS2.ifc', divide_mass=False)
-elph = elphmod.elph.Model('dft/MoS2.epmatwp', 'dft/MoS2.wigner', el, ph,
+el = elphmod.el.Model('data/MoS2')
+ph = elphmod.ph.Model('data/MoS2.ifc', divide_mass=False)
+elph = elphmod.elph.Model('data/MoS2.epmatwp', 'data/MoS2.wigner', el, ph,
     divide_mass=False)
 
 select = [0, 3, 4]
@@ -14,5 +14,5 @@ el.data = el.data[:, :, select]
 elph.data = elph.data[:, :, :, select, :]
 elph.data = elph.data[:, :, :, :, select]
 
-el.to_hrdat('dft/MoS2_3')
-elph.to_epmatwp('dft/MoS2_3')
+el.to_hrdat('data/MoS2_3')
+elph.to_epmatwp('data/MoS2_3')
