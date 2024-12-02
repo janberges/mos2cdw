@@ -25,24 +25,24 @@ described in Appendix B of Phys. Rev B 101, 155107 (2020):
 Now we are ready to relax the structure on different supercells, employing the
 “model III” presented in SciPost Phys. 16, 046 (2024):
 
-    python3 relax_small.py
-    python3 relax_large.py
+    python3 relax_2x2.py
+    python3 relax_8x8.py
 
 Finally, we calculate the doping-dependent superconducting critical temperature
 as a function of doping, which yields the well-known dome structure:
 
-    mpirun phases_small.py
-    python3 phases_plot.py
+    mpirun phases_2x2.py
+    python3 phases_2x2_plot.py
 
 The calculations on the larges supercell are best performed on a supercomputer.
 The results are plotted for Fig. 6 and Supplementary Figure 7 of the paper:
 
-    sbatch phases_large.sh
-    python3 plot.py
+    sbatch phases_18sqrt3.sh
+    python3 phases_18sqrt3_plot.py
 
 A presentation of the relaxed structures for all dopings can also be created:
 
-    python3 structure_plot.py xyz/*.xyz
-    python3 structure_factor.py xyz/*.xyz
-    python3 phase_diagram.py
-    pdflatex phase_diagram.tex
+    python3 structure_plot.py phases_18sqrt3/*.xyz
+    python3 structure_factor.py phases_18sqrt3/*.xyz
+    python3 phases_18sqrt3_overview.py
+    pdflatex phases_18sqrt3_overview.tex

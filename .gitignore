@@ -13,4 +13,4 @@ __pycache__
 mos2*
 relax_small.xyz
 slurm-*.out
-!phase_diagram.tex
+!phases_18sqrt3_overview.tex
