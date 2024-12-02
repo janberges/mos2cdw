@@ -1,4 +1,13 @@
-# Charge-density waves in molybdenum disulfide
+# Supercell model calculations for doped MoS₂
+
+This directory contains the data and scripts to calculate lattice distortions
+and superconducting critical temperatures for electron-doped MoS₂ monolayer on
+large supercells, as shown by Girotto, Berges, Poncé, and Novko (2024).
+
+Reproducing the calculations requires the installation of the Python packages
+elphmod and StoryLines (e.g., in a virtual environment):
+
+    python3 -m pip install elphmod==0.29 storylines==0.15
 
 We use the electron-phonon coupling data from Phys. Rev. X 13, 041009 (2023),
 see Fig. 9, which is located in the directory `dft`. To reduce the computational
@@ -7,17 +16,34 @@ model (which also contains `dxz` and `dyz` orbitals):
 
     python3 523.py
 
-To further reduce the cost, we map the coupling to a nearest-neighbor model:
+To further reduce the cost, we map the coupling to a nearest-neighbor model, as
+described in Appendix B of Phys. Rev B 101, 155107 (2020):
 
     cd model
     python3 optimize.py
+    python3 plot.py
 
-Now we are ready to relax the structure on different supercells:
+Now we are ready to relax the structure on different supercells, employing the
+“model III” presented in SciPost Phys. 16, 046 (2024):
 
     python3 relax_small.py
     python3 relax_large.py
 
-Finally, we calculate the doping-dependent superconducting critical temperature:
+Finally, we calculate the doping-dependent superconducting critical temperature
+as a function of doping, which yields the well-known dome structure:
 
-    mpirun python3 phases.py
+    mpirun phases_small.py
     python3 phases_plot.py
+
+The calculations on the larges supercell are best performed on a supercomputer.
+The results are plotted for Fig. 6 and Supplementary Figure 7 of the paper:
+
+    sbatch phases_large.sh
+    python3 plot.py
+
+A presentation of the relaxed structures for all dopings can also be created:
+
+    python3 structure_plot.py xyz/*.xyz
+    python3 structure_factor.py xyz/*.xyz
+    python3 phase_diagram.py
+    pdflatex phase_diagram.tex
