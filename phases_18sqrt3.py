@@ -79,7 +79,7 @@ elif 'triangle' in ini:
 scipy.optimize.minimize(driver.free_energy, driver.u, jac=driver.jacobian,
     method='BFGS', options=dict(gtol=1e-5, norm=np.inf))
 
-driver.to_xyz('phases_18sqrt3/dop_%03d_from_%s.xyz' % (ini, nel))
+driver.to_xyz('phases_18sqrt3/dop_%03d_from_%s.xyz' % (nel, ini))
 
 E = driver.free_energy()
 
@@ -94,7 +94,7 @@ wmin *= elphmod.misc.Ry
 Tc = elphmod.eliashberg.Tc(lamda, wlog, mustar, w2nd, correct=True)
 
 if elphmod.MPI.comm.rank == 0:
-    with open('phases_18sqrt3/dop_%03d_from_%s.dat' % (ini, nel), 'w') as data:
+    with open('phases_18sqrt3/dop_%03d_from_%s.dat' % (nel, ini), 'w') as data:
         data.write(('%3s' + ' %9s' * 10 + '\n') % ('nel', 'xel',
             'dE/eV', 'N0*eV', 'mu/eV', '|u|/AA',
             'lamda', 'wlog/eV', 'w2nd/eV', 'wmin/eV', 'Tc/K'))
