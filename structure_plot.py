@@ -1,108 +1,130 @@
 #!/usr/bin/env python3
 
 import elphmod
+import matplotlib
+import matplotlib.pyplot as plt
 import numpy as np
-import storylines
 import sys
-
-xyz = sys.argv[1]
-
-comm = elphmod.MPI.comm
-info = elphmod.MPI.info
 
 pw = elphmod.bravais.read_pwi('data/MoS2.pwi')
 
-a = elphmod.bravais.primitives(**pw, bohr=True)
+a = elphmod.bravais.primitives(**pw)
 b = np.array(elphmod.bravais.reciprocals(*a))
 
-if comm.rank == 0:
+r0 = pw['r'].dot(a)
+
+def load_xyz(xyz):
     with open(xyz) as lines:
-        next(lines)
-        A = np.reshape(list(map(float, next(lines).split()[-9:])), (3, 3)).T.copy()
-        N = np.round(A.dot(b.T)).astype(int)
-else:
-    N = np.empty((3, 3), dtype=int)
+        nat = int(next(lines))
+        a = np.reshape(list(map(float, next(lines).split()[-9:])), (3, 3)).T
 
-comm.Bcast(N)
+        r = np.empty((nat, 3))
+        typ = []
 
-info('Plotting %s x %s x %s supercell' % tuple(map(tuple, N)))
+        for i in range(nat):
+            col = next(lines).split()
 
-el = elphmod.el.Model('data/MoS2_3', rydberg=True)
-ph = elphmod.ph.Model('data/MoS2.ifc', divide_mass=False, apply_asr_simple=True)
-elph = elphmod.elph.Model('data/model.epmatwp', 'data/model.wigner', el, ph,
-    divide_mass=False, shared_memory=True)
+            typ.append(col[0])
+            r[i] = list(map(float, col[-3:]))
 
-elph.clear()
-
-driver = elphmod.md.Driver(elph,
-    n=2 - pw['tot_charge'],
-    kT=pw['degauss'],
-    f=elphmod.occupations.smearing(pw['smearing']),
-    supercell=N,
-    unscreen=False,
-)
+    return a * elphmod.misc.a0, typ, r * elphmod.misc.a0
 
 for xyz in sys.argv[1:]:
-    info('Processing %s' % xyz)
+    A, typ, R = load_xyz(xyz)
+    B = np.array(elphmod.bravais.reciprocals(*A))
 
-    driver.from_xyz(xyz)
+    N = np.round(A.dot(b.T)).astype(int)
 
-    r = driver.elph.ph.r.copy()
-    u = driver.u.reshape((-1, 3)).copy()
-    a = driver.elph.ph.a.copy()
+    cells = elphmod.bravais.supercell(*N)[-1]
 
-    tau = np.linalg.norm(r[0, :2] - r[1, :2])
-
-    sgn = -1 if np.allclose(a[0, 1:], 0.0) else +1
-
-    for na in range(driver.elph.ph.nat):
-        if np.isclose(r[na] @ a[0], np.linalg.norm(r[na]) * np.linalg.norm(a[0])):
-            r[na] += a[1]
-
-        if r[na] @ a[0] < sgn * 1e-10:
-            r[na] += a[0]
-
-        if r[na] @ a[0] > 0.75 * np.linalg.norm(a[0]) ** 2 - sgn * 1e-10:
-            r[na] -= a[0]
-
-        if sgn > 0:
-            phi = -np.arctan2(a[0, 1], a[0, 0])
-
-            u[na] = elphmod.bravais.rotate(u[na], phi, two_dimensional=False)
-            r[na] = elphmod.bravais.rotate(r[na], phi, two_dimensional=False)
-
-    R = r + u
-
-    #driver.plot(label=False, scale=20.0, interactive=True)
-
-    if comm.rank != 0:
+    if elphmod.MPI.comm.rank != 0:
         continue
 
-    plot = storylines.Plot(xyaxes=False, height=0, margin=0.2, xmin=r[:, 0].min(),
-        xmax=r[:, 0].max(), ymin=r[:, 1].min(), ymax=r[:, 1].max())
+    print('Processing %s' % xyz)
+    print('Detected %s x %s x %s supercell' % tuple(map(tuple, N)))
 
-    bonds = storylines.bonds(R1=R[0::3, :2], R2=R[1::3, :2],
-        dmin=0.9 * tau, dmax=1.1 * tau)
+    R0 = np.array([n1 * a[0] + n2 * a[1] + n3 * a[2] + r0[na]
+        for n1, n2, n3 in cells for na in range(len(r0))])
 
-    for bond in bonds:
-        plot.line(*zip(*bond), color='lightgray')
+    tau = np.linalg.norm(R0[0, :2] - R0[1, :2])
 
-    atom = dict(mark='*', only_marks=True)
+    u = R - R0
 
-    plot.line(R[1::3, 0], R[1::3, 1], color=storylines.Color(95, 151, 230), **atom)
-    plot.line(R[0::3, 0], R[0::3, 1], color=storylines.Color(216, 186, 141), **atom)
+    nq = 100
 
-    scale = 18.0
+    q = np.array([q1 * B[0] + q2 * B[1]
+        for q1 in range(-nq, nq + 1)
+        for q2 in range(-nq, nq + 1)])
 
-    arrow = {'->': True}
+    maxproj = 0.5 * np.dot(b[0], b[0]) + 1e-8
 
-    for na in range(driver.elph.ph.nat):
-        if np.linalg.norm(u[na, :2]) > 0.025:
-            plot.line(
-                [R[na, 0], R[na, 0] + scale * u[na, 0]],
-                [R[na, 1], R[na, 1] + scale * u[na, 1]],
-                line_width=max(0.3, 5 * np.linalg.norm(u[na, :2])), **arrow)
+    q = np.array([qi for qi in q if
+        maxproj >= abs(np.dot(qi, b[0])) and
+        maxproj >= abs(np.dot(qi, b[1])) and
+        maxproj >= abs(np.dot(qi, b[0] - b[1]))])
 
-    plot.save(xyz.replace('.xyz', '.png'))
+    # q are the Gamma points of the SC BZ within the UC BZ
 
-driver.plot(interactive=False)
+    S = abs(np.exp(-2j * np.pi * q.dot(R.T)).sum(axis=-1)) ** 2
+    S /= len(R) ** 2
+
+    eps = 1e-5
+
+    if np.diag(N).prod() != len(cells):
+        eps *= -1
+
+    phi = -np.arctan2(A[0, 1], A[0, 0])
+
+    for na in range(len(R)):
+        if np.isclose(R0[na] @ A[0],
+                np.linalg.norm(R0[na]) * np.linalg.norm(A[0])):
+
+            R0[na] += A[1]
+
+        if R0[na] @ A[0] < -eps:
+            R0[na] += A[0]
+
+        if R0[na] @ A[0] > 0.75 * np.linalg.norm(A[0]) ** 2 + eps:
+            R0[na] -= A[0]
+
+        u[na] = elphmod.bravais.rotate(u[na], phi, two_dimensional=False)
+        R0[na] = elphmod.bravais.rotate(R0[na], phi, two_dimensional=False)
+
+    R = R0 + u
+
+    fig, ax = plt.subplots()
+
+    plt.scatter(R[1::3, 0], R[1::3, 1], s=20, color='#5f97e6', clip_on=False)
+    plt.scatter(R[0::3, 0], R[0::3, 1], s=20, color='#d8ba8d', clip_on=False)
+
+    ok = np.linalg.norm(u[:, :2], axis=1) > 0.03
+
+    plt.quiver(*R[ok, :2].T, *20 * u[ok, :2].T, angles='xy', scale_units='xy',
+        scale=1, minlength=0, clip_on=False)
+
+    plt.xlim(R0[:, 0].min(), R0[:, 0].max())
+    plt.ylim(R0[:, 1].min(), R0[:, 1].max())
+
+    q = elphmod.bravais.rotate(q.T, phi, two_dimensional=False).T
+
+    q *= tau / np.linalg.norm(B[0])
+
+    q[:, 0] += R0[:, 0].max() - q[:, 0].min() + np.linalg.norm(a[0])
+    q[:, 1] += R0[:, 1].min() - q[:, 1].min()
+
+    ax.scatter(q[:, 0], q[:, 1], c=S, s=30, marker='H', linewidth=0,
+        cmap='cubehelix', norm=matplotlib.colors.LogNorm(vmin=1e-15, vmax=1))
+
+    plt.axis('equal')
+    plt.axis('off')
+
+    points = np.concatenate((q, R0))
+
+    scale = 0.05
+    fig.set_size_inches(scale * points[:, 0].ptp(), scale * points[:, 1].ptp())
+
+    fig.subplots_adjust(0.02, 0.02, 0.98, 0.98)
+
+    fig.savefig(xyz.replace('.xyz', '.pdf'))
+
+    plt.close(fig)

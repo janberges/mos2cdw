@@ -45,6 +45,5 @@ The results are plotted for Fig. 6 and Supplementary Figure 7 of the paper:
 A presentation of the relaxed structures for all dopings can also be created:
 
     python3 structure_plot.py phases_18sqrt3/*.xyz
-    python3 structure_factor.py phases_18sqrt3/*.xyz
     python3 phases_18sqrt3_overview.py
     pdflatex phases_18sqrt3_overview.tex
