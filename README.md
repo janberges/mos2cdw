@@ -29,7 +29,9 @@ Now we are ready to relax the structure on different supercells, employing the
     python3 relax_8x8.py
 
 Finally, we calculate the doping-dependent superconducting critical temperature
-as a function of doping, which yields the well-known dome structure:
+as a function of doping, which yields the well-known dome structure (differences
+between the calculated points and the reference lines are due to insufficient k-
+and q-point densities):
 
     mpirun phases_2x2.py
     python3 phases_2x2_plot.py
