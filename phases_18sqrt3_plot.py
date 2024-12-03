@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 
 import elphmod
-import numpy as np
-import matplotlib.pyplot
+import matplotlib
 import matplotlib.pyplot as plt
+import numpy as np
 import storylines
 
 matplotlib.rc('font', size=20)
@@ -12,14 +12,14 @@ legendstyle = dict(frameon=False, handlelength=0.7, ncol=1)
 
 pwi = elphmod.bravais.read_pwi('data/MoS2.pwi')
 a = elphmod.bravais.primitives(**pwi)
-vuc = np.linalg.norm(np.cross(a[0], a[1])) * 1e-16
-scale = 1 / (1e14 * vuc)
+auc = np.linalg.norm(np.cross(a[0], a[1])) * 1e-16 # primitive-cell area in cm^2
+scale = 1 / (1e14 * auc)
 
 nel1, xel1, dE1, N01, mu1, u1, lamda1, wlog1, w2nd1, wmin1, Tc1 = np.loadtxt(
-    'polaron.dat', skiprows=1).T
+    'phases_18sqrt3/from_triangle.dat', skiprows=1).T
 
 nel2, xel2, dE2, N02, mu2, u2, lamda2, wlog2, w2nd2, wmin2, Tc2 = np.loadtxt(
-    'cdw.dat', skiprows=1).T
+    'phases_18sqrt3/from_2x2.dat', skiprows=1).T
 
 u_thr = 2e-3
 
@@ -39,12 +39,12 @@ cdw = (wmin2 >= 0) & (u2 >= u_thr)
     xel2[cdw], dE2[cdw], N02[cdw], mu2[cdw], u2[cdw], lamda2[cdw], wlog2[cdw],
     w2nd2[cdw], wmin2[cdw], Tc2[cdw])
 
-scatter = []
+marks = []
 lines = []
 
 for group in elphmod.misc.group(nelp, 1.1):
     if len(group) == 1:
-        scatter.extend(group)
+        marks.extend(group)
     else:
         lines.append(group)
 
@@ -57,7 +57,7 @@ colors = sum([2 * [c] for c in ['azure', 'lightgray', 'mistyrose']], start=[])
 nodes = np.array([0.0, 2.7, 3.0, 3.6, 4.0, 7.8])
 
 x = np.linspace(nodes.min(), nodes.max(), 1000)
-ymin = 1.0
+ymin = 1
 ymax = 100
 
 normalize = matplotlib.colors.Normalize(vmin=x[0], vmax=x[-1])
@@ -79,7 +79,7 @@ for n, line in enumerate(lines):
     ax.plot(xelp[line] * scale, Tcp[line], color='slategray',
         label=None if n else 'other', **linestyle)
 
-ax.scatter(xelp[scatter] * scale, Tcp[scatter], c='slategray', s=20)
+ax.scatter(xelp[marks] * scale, Tcp[marks], c='slategray', s=20)
 
 exp = np.loadtxt('data/experiment.dat')
 ax.scatter(exp[:, 0], exp[:, 1], fc='none', ec='black', s=100, label='exp.')
@@ -146,16 +146,15 @@ length_min = +np.inf
 length_max = -np.inf
 
 for abc, ax, label in [
-        ('a', axes[0, 0], 'polaron248'),
-        ('b', axes[0, 1], 'polaron259'),
-        ('c', axes[0, 2], 'polaron333'),
-        ('e', axes[1, 1], 'cdw462'),
-        ('f', axes[1, 2], 'polaron462'),
+        ('a', axes[0, 0], 'dop_248_from_triangle'),
+        ('b', axes[0, 1], 'dop_259_from_triangle'),
+        ('c', axes[0, 2], 'dop_333_from_triangle'),
+        ('e', axes[1, 1], 'dop_462_from_2x2'),
+        ('f', axes[1, 2], 'dop_462_from_triangle'),
         ]:
 
-    A, typ, R0 = load_xyz('xyz/symmetric.xyz')
-
-    A, typ, R = load_xyz('xyz/%s.xyz' % label)
+    A, typ, R0 = load_xyz('phases_18sqrt3/symmetric.xyz')
+    A, typ, R = load_xyz('phases_18sqrt3/%s.xyz' % label)
 
     phi = -np.arctan2(A[0, 1], A[0, 0])
 
@@ -185,7 +184,7 @@ for abc, ax, label in [
 
     q = elphmod.bravais.rotate(q.T, phi, two_dimensional=False).T
 
-    q *= 84
+    q *= 84 # scaling factor of the inset BZs
 
     bzpos = ((0.5 + 5 / (18 * 6)) * np.linalg.norm(A[0]),
         6.5 * np.linalg.norm(a[0]))
@@ -198,7 +197,7 @@ for abc, ax, label in [
         cmap='cubehelix', norm=matplotlib.colors.LogNorm(vmin=1e-15, vmax=1),
         aa=False, zorder=5)
 
-    if label == 'polaron248':
+    if abc == 'a':
         cb = fig.add_axes(rect=(0.045, 0.6, 0.0075, 0.3))
         fig.colorbar(bz, cax=cb)
         cb.yaxis.set_ticks_position('left')
@@ -265,16 +264,16 @@ for abc, ax, label in [
 
     ax.text(-0.06, 0.94, '(%s)' % abc, transform=ax.transAxes)
 
-print(logS_min, logS_max)
-print(length_min, length_max)
+print('log(S) in [%g, %g]' % (logS_min, logS_max))
+print('length in [%.14f, %.14f] AA' % (length_min, length_max))
 
-fig.savefig('plot.pdf')
+fig.savefig('phases_18sqrt3.pdf')
 
-storylines.rasterize('plot', width=3500)
+# convert to raster graphic with pdftoppm and drop alpha channel to reduce size:
 
-image = np.array(storylines.load('plot.png'))[:, :, :3]
-
-storylines.save('plot.png', image)
+storylines.rasterize('phases_18sqrt3', width=3500)
+image = np.array(storylines.load('phases_18sqrt3.png'))[:, :, :3]
+storylines.save('phases_18sqrt3.png', image)
 
 fig, ax = plt.subplots(1, 3, figsize=(14, 7), sharey='row',
     width_ratios=(nels.ptp(), nelc.ptp(), nelp.ptp()))
@@ -319,14 +318,14 @@ for line in lines:
     ax[2].plot(xelp[line] * scale, -dEp[line] * 1e3, color=colors[5])
     ax[2].plot(xelp[line] * scale, up[line] * 1e2, color=colors[6])
 
-ax[2].scatter(xelp[scatter] * scale, Tcp[scatter], c=colors[0], s=10)
-ax[2].scatter(xelp[scatter] * scale, lamdap[scatter], c=colors[1], s=10)
-ax[2].scatter(xelp[scatter] * scale, wlogp[scatter] * 1e3, c=colors[2], s=10)
-ax[2].scatter(xelp[scatter] * scale, w2ndp[scatter] * 1e3, c=colors[3], s=10)
-ax[2].scatter(xelp[scatter] * scale, N0p[scatter] * elphmod.misc.Ry,
+ax[2].scatter(xelp[marks] * scale, Tcp[marks], c=colors[0], s=10)
+ax[2].scatter(xelp[marks] * scale, lamdap[marks], c=colors[1], s=10)
+ax[2].scatter(xelp[marks] * scale, wlogp[marks] * 1e3, c=colors[2], s=10)
+ax[2].scatter(xelp[marks] * scale, w2ndp[marks] * 1e3, c=colors[3], s=10)
+ax[2].scatter(xelp[marks] * scale, N0p[marks] * elphmod.misc.Ry,
     c=colors[4], s=10)
-ax[2].scatter(xelp[scatter] * scale, -dEp[scatter] * 1e3, c=colors[5], s=10)
-ax[2].scatter(xelp[scatter] * scale, up[scatter] * 1e2, c=colors[6], s=10)
+ax[2].scatter(xelp[marks] * scale, -dEp[marks] * 1e3, c=colors[5], s=10)
+ax[2].scatter(xelp[marks] * scale, up[marks] * 1e2, c=colors[6], s=10)
 
 ax[2].set_title('other')
 ax[2].set_xlim(xelp.min() * scale, xelp.max() * scale)
@@ -334,4 +333,4 @@ ax[2].set_xlim(xelp.min() * scale, xelp.max() * scale)
 for a in ax:
     a.xaxis.set_major_locator(matplotlib.ticker.MultipleLocator(base=1.0))
 
-fig.savefig('plot_si.pdf')
+fig.savefig('phases_18sqrt3_si.pdf')
