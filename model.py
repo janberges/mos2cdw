@@ -63,8 +63,6 @@ def setup_coupling(
         * elphmod.misc.uRy)
 
     def coupling(q1=0, q2=0, q3=0, k1=0, k2=0, k3=0, **ignore):
-        """Calculate coupling according to Eq. (B4) of arXiv:1911.02450."""
-
         K1 = k1 + q1
         K2 = k2 + q2
 
@@ -82,14 +80,8 @@ def setup_coupling(
 def save_coupling(stem, coupling, el, ph):
     nq = nk = (3, 3, 1)
 
-    q = [(q1, q2, q3)
-        for q1 in range(nq[0])
-        for q2 in range(nq[1])
-        for q3 in range(nq[2])]
-
-    q = 2 * np.pi * np.array(q, dtype=float) / nq
-
-    g = elphmod.elph.sample(coupling, q.reshape((-1, 3)), nk)
+    q = elphmod.bravais.mesh(*nq, flat=True)
+    g = elphmod.elph.sample(coupling, q, nk)
 
     elph = elphmod.elph.Model(el=el, ph=ph)
     elphmod.elph.q2r(elph, nq, nk, g, r=np.repeat(ph.r[1:2], el.size, axis=0))
