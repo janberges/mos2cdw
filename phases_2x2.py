@@ -41,6 +41,7 @@ if comm.rank == 0:
     data.write((' %9s' * 10 + '\n') % ('xel',
         'dE/eV', 'N0*eV', 'mu/eV', '|u|/AA',
         'lamda', 'wlog/eV', 'w2nd/eV', 'wmin/eV', 'Tc/K'))
+    data.flush()
 
 for x in dopings:
     info('%g electrons per unit cell' % x)
@@ -74,6 +75,7 @@ for x in dopings:
             (driver.mu - mu0) * elphmod.misc.Ry,
             np.linalg.norm(driver.u) * elphmod.misc.a0 / np.sqrt(cells),
             lamda, wlog, w2nd, wmin, Tc))
+        data.flush()
 
 if comm.rank == 0:
     data.close()
