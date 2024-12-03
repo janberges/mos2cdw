@@ -10,9 +10,9 @@ elphmod and StoryLines (e.g., in a virtual environment):
     python3 -m pip install elphmod==0.29 storylines==0.15
 
 We use the electron-phonon coupling data from Phys. Rev. X 13, 041009 (2023),
-see Fig. 9, which is located in the directory `dft`. To reduce the computational
-cost, we extract a three-band model (`dz2`, `dx2-y2`, `dxy`) from this five-band
-model (which also contains `dxz` and `dyz` orbitals):
+see Fig. 9, which is located in the folder `data`. To reduce the computational
+cost, we extract a three-band model (Mo `dz2`, `dx2-y2`, and `dxy` orbitals)
+from this five-band model (which also contains Mo `dxz` and `dyz` orbitals):
 
     python3 523.py
 
