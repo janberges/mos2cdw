@@ -34,7 +34,7 @@ as a function of doping, which yields the well-known dome structure:
     mpirun phases_2x2.py
     python3 phases_2x2_plot.py
 
-The calculations on the larges supercell are best performed on a supercomputer.
+The calculations on the largest supercell are best performed on a supercomputer.
 The results are plotted for Fig. 6 and Supplementary Figure 7 of the paper:
 
     sbatch phases_18sqrt3.sh
