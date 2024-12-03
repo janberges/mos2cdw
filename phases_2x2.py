@@ -7,7 +7,9 @@ import scipy.optimize
 comm = elphmod.MPI.comm
 info = elphmod.MPI.info
 
-dopings = np.linspace(0.0, 0.6, 61)
+dopings = np.linspace(0.0, 0.7, 71)
+
+mustar = 0.13
 
 pw = elphmod.bravais.read_pwi('data/MoS2.pwi')
 
@@ -34,21 +36,17 @@ driver.f = elphmod.occupations.fermi_dirac
 driver.diagonalize()
 mu0 = driver.mu
 
-driver.plot(scale=10.0, interactive=True)
-
 if comm.rank == 0:
-    data = open('phases.dat', 'w')
-    data.write((' %9s' * 10 + '\n') % ('nel', 'xel',
-        'dE/eV', 'mu/eV', '|u|/AA',
+    data = open('phases_2x2.dat', 'w')
+    data.write((' %9s' * 10 + '\n') % ('xel',
+        'dE/eV', 'N0*eV', 'mu/eV', '|u|/AA',
         'lamda', 'wlog/eV', 'w2nd/eV', 'wmin/eV', 'Tc/K'))
 
-for doping in dopings:
-    info('Setting the doping to %g electrons per unit cell...' % doping)
-
-    driver.n = (2 + doping) * cells
+for x in dopings:
+    info('%g electrons per unit cell' % x)
 
     driver.u[:] = 0.0
-
+    driver.n = (2 + x) * cells
     E0 = driver.free_energy()
 
     driver.random_displacements()
@@ -58,22 +56,24 @@ for doping in dopings:
 
     E = driver.free_energy()
 
+    N0 = driver.f.delta(driver.e / driver.kT).sum() / driver.kT
+    N0 /= driver.nk.prod()
+
     lamda, wlog, w2nd, wmin = driver.superconductivity()
 
     wlog *= elphmod.misc.Ry
     w2nd *= elphmod.misc.Ry
     wmin *= elphmod.misc.Ry
 
-    Tc = elphmod.eliashberg.Tc(lamda, wlog, 0.0, w2nd, correct=True)
+    Tc = elphmod.eliashberg.Tc(lamda, wlog, mustar, w2nd, correct=True)
 
     if comm.rank == 0:
-        data.write((' %9.6f' * 10 + '\n') % (driver.n, doping,
+        data.write((' %9.6f' * 10 + '\n') % (x,
             (E - E0) * elphmod.misc.Ry / cells,
+            N0 / elphmod.misc.Ry / cells,
             (driver.mu - mu0) * elphmod.misc.Ry,
             np.linalg.norm(driver.u) * elphmod.misc.a0 / np.sqrt(cells),
             lamda, wlog, w2nd, wmin, Tc))
-
-    info('The critical temperature is %g K.' % Tc)
 
 if comm.rank == 0:
     data.close()
