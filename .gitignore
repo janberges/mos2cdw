@@ -5,11 +5,8 @@
 *.pdf
 *.png
 *.snm
-*.tex
 *.toc
 *.txt
 MoS2_3*
 __pycache__
-mos2*
 slurm-*.out
-!phases_18sqrt3_overview.tex
