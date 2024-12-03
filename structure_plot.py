@@ -113,7 +113,8 @@ for xyz in sys.argv[1:]:
     q[:, 1] += R0[:, 1].min() - q[:, 1].min()
 
     ax.scatter(q[:, 0], q[:, 1], c=S, s=30, marker='H', linewidth=0,
-        cmap='cubehelix', norm=matplotlib.colors.LogNorm(vmin=1e-15, vmax=1))
+        norm=matplotlib.colors.LogNorm(vmin=1e-15, vmax=1, clip=True),
+        cmap='cubehelix')
 
     plt.axis('equal')
     plt.axis('off')
