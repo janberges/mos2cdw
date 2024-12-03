@@ -244,9 +244,6 @@ for abc, ax, label in [
     ax.scatter(R[1::3, 0], R[1::3, 1], s=20, zorder=2, color='#5f97e6')
     ax.scatter(R[0::3, 0], R[0::3, 1], s=20, zorder=2, color='#d8ba8d')
 
-    ax.set_xticks([])
-    ax.set_yticks([])
-
     ax.axis('equal')
     ax.axis('off')
 
