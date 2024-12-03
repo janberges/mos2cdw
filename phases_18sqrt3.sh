@@ -18,8 +18,8 @@ export OMP_NUM_THREADS=6
 export OPENBLAS_NUM_THREADS=6
 export VECLIB_MAXIMUM_THREADS=6
 
-#ini=cdw
-ini=polaron
+#ini=2x2
+ini=triangle
 #nel=`seq -w 0 6 186`
 #nel="`seq 192 6 246` `seq 348 6 474`"
 nel=`seq 247 278`
@@ -29,7 +29,7 @@ nel=`seq 247 278`
 
 for n in $nel
 do
-    python3 18sqrt3.py $n $ini > $ini$n.out &
+    python3 18sqrt3.py $n $ini > phases_18sqrt3/dop_${n}_from_${ini}.out &
 done
 
 wait

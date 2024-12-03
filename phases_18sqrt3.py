@@ -5,11 +5,8 @@ import numpy as np
 import scipy.optimize
 import sys
 
-comm = elphmod.MPI.comm
-info = elphmod.MPI.info
-
 nel = int(sys.argv[1]) if len(sys.argv) > 1 else 0
-ini = str(sys.argv[2]) if len(sys.argv) > 2 else 'cdw'
+ini = str(sys.argv[2]) if len(sys.argv) > 2 else '2x2'
 
 mustar = 0.13
 
@@ -48,7 +45,7 @@ def triangle(atoms=[1471, 1474, 1555], amplitude=0.2):
 
         driver.u[3 * atom:3 * atom + 3] = u
 
-def triangles(distortion=0.02, amplitude=0.1):
+def cdw_2x2(distortion=0.02, amplitude=0.1):
     driver.random_displacements(distortion)
     random = driver.u.copy()
 
@@ -66,8 +63,7 @@ def triangles(distortion=0.02, amplitude=0.1):
     driver.u += random
 
 symmetric()
-
-driver.to_xyz('xyz/symmetric.xyz')
+driver.to_xyz('phases_18sqrt3/symmetric.xyz')
 
 driver.diagonalize()
 mu0 = driver.mu
@@ -75,15 +71,15 @@ mu0 = driver.mu
 driver.n = 2 * cells + nel
 E0 = driver.free_energy()
 
-if 'cdw' in ini:
-    triangles()
-elif 'polaron' in ini:
+if '2x2' in ini:
+    cdw_2x2()
+elif 'triangle' in ini:
     triangle()
 
 scipy.optimize.minimize(driver.free_energy, driver.u, jac=driver.jacobian,
     method='BFGS', options=dict(gtol=1e-5, norm=np.inf))
 
-driver.to_xyz('xyz/%s%03d.xyz' % (ini, nel))
+driver.to_xyz('phases_18sqrt3/dop_%03d_from_%s.xyz' % (ini, nel))
 
 E = driver.free_energy()
 
@@ -97,10 +93,8 @@ wmin *= elphmod.misc.Ry
 
 Tc = elphmod.eliashberg.Tc(lamda, wlog, mustar, w2nd, correct=True)
 
-info('The critical temperature is %g K.' % Tc)
-
-if comm.rank == 0:
-    with open('%s%03d.dat' % (ini, nel), 'w') as data:
+if elphmod.MPI.comm.rank == 0:
+    with open('phases_18sqrt3/dop_%03d_from_%s.dat' % (ini, nel), 'w') as data:
         data.write(('%3s' + ' %9s' * 10 + '\n') % ('nel', 'xel',
             'dE/eV', 'N0*eV', 'mu/eV', '|u|/AA',
             'lamda', 'wlog/eV', 'w2nd/eV', 'wmin/eV', 'Tc/K'))
