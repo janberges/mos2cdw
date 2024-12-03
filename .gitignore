@@ -11,6 +11,5 @@
 MoS2_3*
 __pycache__
 mos2*
-relax_small.xyz
 slurm-*.out
 !phases_18sqrt3_overview.tex

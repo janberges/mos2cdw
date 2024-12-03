@@ -5,9 +5,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 import scipy.optimize
 
-unfold = False
-linewidth = 0.5
-
 pw = elphmod.bravais.read_pwi('data/MoS2.pwi')
 
 el = elphmod.el.Model('data/MoS2_3', rydberg=True)
@@ -17,9 +14,6 @@ elph = elphmod.elph.Model('data/model.epmatwp', 'data/model.wigner', el, ph,
 
 elph = elph.supercell(2, 2, shared_memory=True)
 
-# instead, for 2 sqrt(3) x 2 sqrt(3) cell (also reduce nk and nq):
-#elph = elph.supercell((4, 2, 0), (-2, 2, 0), shared_memory=True)
-
 driver = elphmod.md.Driver(elph,
     nk=(12, 12),
     nq=(6, 6),
@@ -28,7 +22,7 @@ driver = elphmod.md.Driver(elph,
     f=elphmod.occupations.smearing(pw['smearing']),
 )
 
-driver.n = 2.3 * len(driver.elph.cells)
+driver.n = 2.4 * len(driver.elph.cells)
 driver.kT = 0.005
 driver.f = elphmod.occupations.fermi_dirac
 
@@ -41,35 +35,41 @@ scipy.optimize.minimize(driver.free_energy, driver.u, jac=driver.jacobian,
 
 driver.plot(interactive=False)
 
-driver.to_xyz('relax_small.xyz')
-
+ph = elphmod.ph.Model('data/MoS2.ifc', apply_asr_simple=True)
 Ph = driver.phonons(apply_asr_simple=True)
 
 path = 'GMKG'
 q, x, corners = elphmod.bravais.path(path, ibrav=4, N=150)
+Q = np.dot(np.dot(q, elphmod.bravais.reciprocals(*ph.a)), Ph.a.T)
 
-if unfold:
-    ph = elphmod.ph.Model('data/MoS2.ifc', apply_asr_simple=True)
+figure, ax = plt.subplots(1, 2, sharey='row')
 
-    Q = np.dot(np.dot(q, elphmod.bravais.reciprocals(*ph.a)), Ph.a.T)
+W2 = elphmod.dispersion.dispersion(Ph.D, q)
 
-    w2, u = elphmod.dispersion.dispersion(ph.D, q, vectors=True)
-    W2, U = elphmod.dispersion.dispersion(Ph.D, Q, vectors=True)
+if elphmod.MPI.comm.rank == 0:
+    ax[0].plot(x, elphmod.ph.sgnsqrt(W2) * 1e3 * elphmod.misc.Ry,
+        color='firebrick')
 
-    weight = elphmod.dispersion.unfolding_weights(q, Ph.cells, u, U)
-else:
-    W2 = elphmod.dispersion.dispersion(Ph.D, q)
+    ax[0].set_title('On supercell BZ')
+    ax[0].set_ylabel('Phonon energy (meV)')
+    ax[0].set_xlabel('Wave vector')
+    ax[0].set_xticks(x[corners], [X + "$'$" for X in path])
 
-    weight = np.ones(W2.shape)
+w2, u = elphmod.dispersion.dispersion(ph.D, q, vectors=True)
+W2, U = elphmod.dispersion.dispersion(Ph.D, Q, vectors=True)
+
+weight = elphmod.dispersion.unfolding_weights(q, Ph.cells, u, U)
 
 if elphmod.MPI.comm.rank == 0:
     for nu in range(W2.shape[1]):
         fatband, = elphmod.plot.compline(x, elphmod.ph.sgnsqrt(W2[:, nu])
-            * 1e3 * elphmod.misc.Ry, linewidth * weight[:, nu])
+            * 1e3 * elphmod.misc.Ry, 0.5 * weight[:, nu])
 
-        plt.fill(*fatband, linewidth=0.0, color='firebrick')
+        ax[1].fill(*fatband, linewidth=0.0, color='firebrick')
 
-    plt.ylabel('Phonon energy (meV)')
-    plt.xlabel('Wave vector')
-    plt.xticks(x[corners], path)
-    plt.show()
+    ax[1].set_title('Unfolded to original BZ')
+    ax[1].set_ylabel('Phonon energy (meV)')
+    ax[1].set_xlabel('Wave vector')
+    ax[1].set_xticks(x[corners], path)
+
+plt.show()
