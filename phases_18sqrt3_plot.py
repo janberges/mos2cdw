@@ -70,19 +70,21 @@ ax = axes[1, 0]
 for i in range(x.size - 1):
     ax.fill_between([x[i], x[i + 1]], ymin, ymax, color=cmap(normalize(x[i])))
 
+exp = np.loadtxt('data/experiment.dat')
+ax.scatter(exp[:, 0], exp[:, 1], fc='none', ec='black', s=100,
+    label=r'exp. [3,36]')
+
 linestyle = dict(solid_capstyle='round', linewidth=2.5)
 
-ax.plot(xels * scale, Tcs, color='teal', label=r'$1 \times 1$ H', **linestyle)
-ax.plot(xelc * scale, Tcc, color='coral', label=r'$2 \times 2$ CDW', **linestyle)
+ax.plot(xels * scale, Tcs, color='teal', label=r'1$\times$1 H', **linestyle)
+ax.plot(xelc * scale, Tcc, color='coral', label=r'2$\times$2 CDW',
+    **linestyle)
 
 for n, line in enumerate(lines):
     ax.plot(xelp[line] * scale, Tcp[line], color='slategray',
         label=None if n else 'other', **linestyle)
 
 ax.scatter(xelp[marks] * scale, Tcp[marks], c='slategray', s=20)
-
-exp = np.loadtxt('data/experiment.dat')
-ax.scatter(exp[:, 0], exp[:, 1], fc='none', ec='black', s=100, label='exp.')
 
 ax.set_xlabel('$n$ ($10^{14}\,\mathrm{cm}^{-2}$)')
 ax.set_ylabel('$T_c$ (K)')
@@ -98,7 +100,7 @@ ax.xaxis.set_major_locator(matplotlib.ticker.MultipleLocator(base=1.0))
 
 ax.set_yscale('log')
 
-ax.legend(loc='upper left', **legendstyle)
+ax.legend(loc='upper left', ncols=2, **legendstyle)
 
 ax.text(-0.18, 0.95, '(d)', transform=ax.transAxes)
 
