@@ -1,49 +1,23 @@
 \documentclass[aspectratio=169]{beamer}
 
 \setbeamertemplate{navigation symbols}{}
-\setbeamertemplate{footline}{\hfill\scriptsize%
-  \insertframenumber/\inserttotalframenumber\kern0.5ex\vskip2pt}
 
-\hypersetup{colorlinks, allcolors=myblue}
-
-\setbeamerfont{title}{series=\bfseries}
 \setbeamerfont{frametitle}{series=\bfseries}
-\setbeamercolor{title}{fg=myblue}
-\setbeamercolor{frametitle}{fg=myblue}
-\setbeamercolor{structure}{fg=myblue}
-\setbeamercolor{normal text}{fg=myblue}
+\setbeamercolor{frametitle}{fg=black}
 
 \usefonttheme{professionalfonts}
 
-\usepackage[english]{babel}
-\usepackage[utf8]{inputenc}
-
-\usepackage[math]{iwona}
+\usepackage{cabin}
 \usepackage[T1]{fontenc}
 
-\usepackage{tikz, bm}
-
-\definecolor{myred}{RGB}{216, 186, 141}
-\definecolor{myblue}{RGB}{95, 151, 230}
-
-\def\twentyseven{27}
+\usepackage{tikz}
 
 \begin{document}
-\foreach \ini\INI in {polaron/triangle,cdw/CDW} {%
-\foreach \nel in {000,006,012,018,024,030,036,042,048,054,060,066,072,078,084,090,096,102,108,...,246,247,248,...,342,348,354,...,666} {%
-\begin{frame}
-    \vspace*{1mm}%
-    \hspace*{-0.05\linewidth}%
-    \begin{minipage}{0.67\linewidth}
-        Starting from \INI{} structure for \nel{} doping electrons\\
-        \includegraphics[width=\linewidth]{xyz/\ini\nel.pdf}%
-    \end{minipage}%
-    \begin{minipage}{0.43\linewidth}
-        \vspace*{4mm}%
-        \includegraphics[width=\linewidth]{here/\nel.pdf}\\
-        \includegraphics[width=\linewidth]{xyz/\ini\nel_ft.png}%
-    \end{minipage}%
-    \hspace*{-0.05\linewidth}%
+\foreach \ini in {triangle,2x2} {%
+\foreach \nel in {000,006,012,018,024,030,036,042,048,054,060,066,072,%
+    078,084,090,096,102,108,...,246,247,248,...,342,348,354,...,666} {%
+\begin{frame}{Starting from \ini{} structure for \nel{} doping electrons}
+    \includegraphics[width=\linewidth]{phases_18sqrt3/dop_\nel_from_\ini.pdf}%
 \end{frame}
 }%
 }%
