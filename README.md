@@ -2,7 +2,7 @@
 
 This directory contains the data and scripts to calculate lattice distortions
 and superconducting critical temperatures for electron-doped MoS₂ monolayer on
-large supercells, as shown by Girotto, Berges, Poncé, and Novko (2024).
+large supercells, as shown by Girotto Erhardt, Berges, Poncé, and Novko (2024).
 
 Reproducing the calculations requires the installation of the Python packages
 elphmod and StoryLines (e.g., in a virtual environment):
