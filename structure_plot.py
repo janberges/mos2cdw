@@ -119,10 +119,7 @@ for xyz in sys.argv[1:]:
     plt.axis('equal')
     plt.axis('off')
 
-    points = np.concatenate((q, R0))
-
-    scale = 0.05
-    fig.set_size_inches(scale * points[:, 0].ptp(), scale * points[:, 1].ptp())
+    fig.set_size_inches(0.05 * np.ptp(np.concatenate((q, R0)), axis=0)[:2])
 
     fig.subplots_adjust(0.02, 0.02, 0.98, 0.98)
 

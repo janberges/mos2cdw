@@ -275,7 +275,7 @@ image = np.array(storylines.load('phases_18sqrt3.png'))[:, :, :3]
 storylines.save('phases_18sqrt3.png', image)
 
 fig, ax = plt.subplots(1, 3, figsize=(14, 7), sharey='row',
-    width_ratios=(nels.ptp(), nelc.ptp(), nelp.ptp()))
+    width_ratios=(np.ptp(nels), np.ptp(nelc), np.ptp(nelp)))
 
 fig.subplots_adjust(0.20, 0.12, 0.97, 0.94, wspace=0.05)
 
