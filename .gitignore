@@ -5,6 +5,7 @@
 *.pdf
 *.png
 *.snm
+*.tar.gz
 *.toc
 *.txt
 MoS2_3*
