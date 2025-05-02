@@ -102,25 +102,25 @@ ax.set_yscale('log')
 
 ax.legend(loc='upper left', ncols=2, **legendstyle)
 
-ax.text(-0.18, 0.95, '(d)', transform=ax.transAxes)
+ax.text(-0.15, 0.95, 'd', transform=ax.transAxes, weight='bold')
 
 annotation = dict(textcoords='offset points', arrowprops=dict(arrowstyle='->'),
-    ha='center', va='center')
+    ha='center', va='center', weight='bold')
 
 n = np.argmax(nelp == 248)
-ax.annotate('(a)', (xelp[n] * scale, Tcp[n]), (10, 40), **annotation)
+ax.annotate('a', (xelp[n] * scale, Tcp[n]), (10, 40), **annotation)
 
 n = np.argmax(nelp == 259)
-ax.annotate('(b)', (xelp[n] * scale, Tcp[n]), (-10, -40), **annotation)
+ax.annotate('b', (xelp[n] * scale, Tcp[n]), (-10, -40), **annotation)
 
 n = np.argmax(nelp == 333)
-ax.annotate('(c)', (xelp[n] * scale, Tcp[n]), (-10, -40), **annotation)
+ax.annotate('c', (xelp[n] * scale, Tcp[n]), (-10, -40), **annotation)
 
 n = np.argmax(nelc == 462)
-ax.annotate('(e)', (xelc[n] * scale, Tcp[n]), (10, 40), **annotation)
+ax.annotate('e', (xelc[n] * scale, Tcp[n]), (10, 40), **annotation)
 
 n = np.argmax(nelp == 462)
-ax.annotate('(f)', (xelp[n] * scale, Tcp[n]), (-10, -40), **annotation)
+ax.annotate('f', (xelp[n] * scale, Tcp[n]), (-10, -40), **annotation)
 
 def load_xyz(xyz):
     with open(xyz) as lines:
@@ -261,7 +261,7 @@ for abc, ax, label in [
         scale=1, width=0.006, headwidth=3, headlength=2, headaxislength=2,
         zorder=3, clip_on=False)
 
-    ax.text(-0.06, 0.94, '(%s)' % abc, transform=ax.transAxes)
+    ax.text(-0.05, 0.95, abc, transform=ax.transAxes, weight='bold')
 
 print('log(S) in [%g, %g]' % (logS_min, logS_max))
 print('length in [%.14f, %.14f] AA' % (length_min, length_max))
