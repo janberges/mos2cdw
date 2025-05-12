@@ -86,7 +86,7 @@ for n, line in enumerate(lines):
 
 ax.scatter(xelp[marks] * scale, Tcp[marks], c='slategray', s=20)
 
-ax.set_xlabel('$n$ ($10^{14}\,\mathrm{cm}^{-2}$)')
+ax.set_xlabel(r'$n$ ($10^{14}\,\mathrm{cm}^{-2}$)')
 ax.set_ylabel('$T_c$ (K)')
 
 tickstyle = dict(direction='in', top=True, right=True)
@@ -306,7 +306,7 @@ ax[1].plot(xelc * scale, uc * 1e2, color=colors[6])
 
 ax[1].set_title(r'$2 \times 2$ CDW')
 ax[1].set_xlim(xelc.min() * scale, xelc.max() * scale)
-ax[1].set_xlabel('$n$ ($10^{14}\,\mathrm{cm}^{-2}$)')
+ax[1].set_xlabel(r'$n$ ($10^{14}\,\mathrm{cm}^{-2}$)')
 
 for line in lines:
     ax[2].plot(xelp[line] * scale, Tcp[line], color=colors[0])

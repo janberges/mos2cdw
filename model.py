@@ -16,8 +16,8 @@ def setup_coupling(
     M=95.95,
     m=32.06,
 
-    beta=5.0):
-
+    beta=5.0
+):
     t0 = np.array([
         [ t_z2,      t_z2_x2y2, t_z2_xy  ],
         [ t_z2_x2y2, t_x2y2,    t_x2y2_xy],
