@@ -50,7 +50,7 @@ plot = storylines.Plot(
     lbox=True,
 
     mark_size='0.8pt',
-    )
+)
 
 plot.line(xels, Tcs, color='blue', thick=True, label='undistorted')
 

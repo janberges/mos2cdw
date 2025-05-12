@@ -148,13 +148,12 @@ length_min = +np.inf
 length_max = -np.inf
 
 for abc, ax, label in [
-        ('a', axes[0, 0], 'dop_248_from_triangle'),
-        ('b', axes[0, 1], 'dop_259_from_triangle'),
-        ('c', axes[0, 2], 'dop_333_from_triangle'),
-        ('e', axes[1, 1], 'dop_462_from_2x2'),
-        ('f', axes[1, 2], 'dop_462_from_triangle'),
-        ]:
-
+    ('a', axes[0, 0], 'dop_248_from_triangle'),
+    ('b', axes[0, 1], 'dop_259_from_triangle'),
+    ('c', axes[0, 2], 'dop_333_from_triangle'),
+    ('e', axes[1, 1], 'dop_462_from_2x2'),
+    ('f', axes[1, 2], 'dop_462_from_triangle'),
+]:
     A, typ, R0 = load_xyz('phases_18sqrt3/symmetric.xyz')
     A, typ, R = load_xyz('phases_18sqrt3/%s.xyz' % label)
 

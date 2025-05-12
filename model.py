@@ -46,7 +46,7 @@ def setup_coupling(
         dt_dphi = (
               np.einsum('ab,bc,cd->ad', dR_dphi(phi), t0, R(-phi))
             - np.einsum('ab,bc,cd->ad', R(phi), t0, dR_dphi(-phi))
-            )
+        )
 
         dt_dx = dt_dr * np.cos(phi) - dt_dphi / a * np.sin(phi)
         dt_dy = dt_dr * np.sin(phi) + dt_dphi / a * np.cos(phi)
@@ -73,7 +73,7 @@ def setup_coupling(
             + dt[4] * (np.exp(-1j * (K1 + K2)) - np.exp(-1j * (k1 + k2)))
             + dt[2] * (np.exp(1j * K2) - np.exp(1j * k2))
             + dt[5] * (np.exp(-1j * K2) - np.exp(-1j * k2))
-            ) / sqrtM
+        ) / sqrtM
 
     return coupling
 
